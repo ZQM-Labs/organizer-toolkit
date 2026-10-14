@@ -13,7 +13,7 @@ argue about riddles (they will).
 
 **What ages?**
 The Dial sets it: Cozy is all-ages, Spooky suits teens+, After Dark is for
-adults and competitive offices.
+adults, and Overdrive is the competitive office setting.
 
 **What if our space is small?**
 A backyard works. Stops can be 20 feet apart — the puzzles carry the game,
