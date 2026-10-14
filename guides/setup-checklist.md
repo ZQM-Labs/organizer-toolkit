@@ -2,7 +2,7 @@
 
 ## 2 weeks out
 - [ ] Pick your date, start time, and rain date.
-- [ ] Pick your Dial setting: **Cozy** (all ages), **Spooky** (teens+), **After Dark** (adults/competitive).
+- [ ] Pick your Dial setting: **Cozy** (all ages), **Spooky** (teens+), **After Dark** (adults), **Overdrive** (competitive offices).
 - [ ] Walk your space and choose 6 waypoints, 2–4 minutes apart on foot. Note anything that could move or vanish (parked cars, decorations).
 - [ ] Send us your waypoint list (or invite us to the setup call) so the quest text matches what players will actually see.
 
