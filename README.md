@@ -13,7 +13,7 @@ Everything an organizer ("Lab Assistant") needs to run a **ZQM Labs — Z's Ques
 
 You get a kit: 6 QR signs + a start poster, a placement map, an answer key, and
 a link players open on their phones (no app). You print the signs, place them,
-pick a scare level on the Dial (Cozy / Spooky / After Dark), and the game runs
+pick a scare level on the Dial (Cozy / Spooky / After Dark / Overdrive), and the game runs
 itself. One setup call with us before the event is included in every kit.
 
 ## Quest packs
