@@ -31,4 +31,4 @@ permission, always).
 Community tier $199 · Office tier $349–499. One flat fee, yours to replay
 for your group.
 
-zqmcomputing@gmail.com · https://zqmlabs.com
+<zqmcomputing@gmail.com> · <https://zqmlabs.com>
