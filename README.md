@@ -1,5 +1,15 @@
 # Lab Assistant's Toolkit — ZQM Labs
 
+<!-- ZQM-START -->
+<p align="center">
+  <strong>ZQM Labs — Z's Quests & Mischief</strong><br>
+  <a href="https://zqmlabs.com">zqmlabs.com</a> •
+  <a href="https://github.com/ZQM-Labs">GitHub</a>
+</p>
+<!-- ZQM-END -->
+
+
+
 Everything an organizer ("Lab Assistant") needs to run a
 **ZQM Labs — Z's Quests & Mischief** scavenger-hunt game in their own
 space. *Games, gear & a little mischief.*
@@ -45,3 +55,15 @@ including a **free sample quest** you can run today.
 Questions? <zqmcomputing@gmail.com> · <https://zqmlabs.com>
 
 *Play more. Plan less.*
+
+
+<!-- ZQM-FOOTER-START -->
+---
+
+<p align="center">
+  <em>Play more. Plan less.</em><br>
+  <a href="https://zqmlabs.com">zqmlabs.com</a> •
+  <a href="https://github.com/ZQM-Labs">ZQM Labs</a> •
+  <a href="https://github.com/ZQM-Computing">ZQM Computing</a>
+</p>
+<!-- ZQM-FOOTER-END -->
