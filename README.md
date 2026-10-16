@@ -40,6 +40,19 @@ Game content lives in
 [ZQM-Labs/quest-packs](https://github.com/ZQM-Labs/quest-packs) —
 including a **free sample quest** you can run today.
 
+## Community-first hosting
+
+ZQM Labs is designed around communities using shared stories to bring people together. The current operational kit is still a location-based event format; adapt each run to the venue, audience, access needs, and support capacity rather than assuming every location or format is already supported.
+
+Before hosting:
+1. **Choose a safe, accessible route.** Confirm permission for every stop, avoid traffic hazards and inaccessible paths, and offer a non-GPS alternative where practical.
+2. **Adapt the experience to the group.** Consider age range, language, cultural context, sensory needs, weather, and whether the event should be spooky or family-friendly.
+3. **Keep participation voluntary.** Explain what location permissions the game uses, do not collect unnecessary personal information, and provide a clear way to participate without sharing a public team name.
+4. **Capture feedback responsibly.** Ask participants before taking or publishing photos. Send playtest observations without names or identifying details unless participants have explicitly agreed.
+5. **Report what changed.** Note venue-specific adaptations, accessibility barriers, technical failures, and suggestions for the next community.
+
+The toolkit supports local hosts today. Worldwide event fulfillment, translation coverage, and a global organizer network should not be assumed unless separately confirmed.
+
 ## More from ZQM Labs
 
 - [quest-packs][qp] — edition catalog + free sample quest
