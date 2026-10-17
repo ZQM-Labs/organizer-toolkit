@@ -1,18 +1,21 @@
-name: ci
+name: Documentation CI
+
 on:
   push:
-    branches: [ main, master ]
+    branches: [main, master]
   pull_request:
-    branches: [ main, master ]
+    branches: [main, master]
+
+permissions:
+  contents: read
+
 jobs:
-  validate:
+  docs:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
-      - run: echo 'No tests configured yet.'
-  ci:
-    name: ci
-    needs: [validate]
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "validation passed"
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Check relative Markdown links
+        run: python .github/scripts/check_markdown_links.py
