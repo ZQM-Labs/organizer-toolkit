@@ -9,7 +9,7 @@ Report vulnerabilities to [zqmcomputing@gmail.com](mailto:zqmcomputing@gmail.com
 
 ## Reporting
 
-- **Email**: zqmcomputing@gmail.com
+- **Email**: [zqmcomputing@gmail.com](mailto:zqmcomputing@gmail.com)
 - **GitHub Security Advisory**: Use the "Security" tab on GitHub
 - Please do NOT open public issues for security vulnerabilities
 
