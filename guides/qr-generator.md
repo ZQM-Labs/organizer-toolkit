@@ -97,4 +97,3 @@ The lantern-player treats `ac` and `code` as different params. Don't mix them up
 For a visual interface, open `qr-manager.html` in a browser. Upload your
 kit config JSON to see all QR codes, test each URL, and run a pre-print
 checklist. No server needed — it runs entirely in the browser.
-
