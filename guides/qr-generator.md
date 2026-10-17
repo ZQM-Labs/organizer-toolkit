@@ -1,8 +1,9 @@
 # QR Code Generator Guide
 
-The QR code generator lives in [`ZQM-Computing/zqm-labs/lantern-kit`][lantern-kit].
-This guide walks organizers through generating, testing, and printing QR signs
-for a ZLM kit.
+The QR code generator is currently maintained in the internal
+`lantern-kit` directory of the `ZQM-Computing/zqm-labs` monorepo; repository
+access is required. This guide walks organizers through generating, testing,
+and printing QR signs for a ZQM kit.
 
 ## Quick start
 
@@ -31,10 +32,12 @@ python3 test_qr_signs.py my-kit.json
 ## What you get
 
 `signs.html` contains **7 pages**:
+
 - **Page 1:** Start poster (access code QR for team registration)
 - **Pages 2–7:** Stop signs (checkpoint QRs — scanning unlocks the stop)
 
 Each sign includes:
+
 - A QR code (error-correction H — survives ~30% damage)
 - The stop name and code (human-readable fallback)
 - Placement hint from the config
@@ -94,5 +97,3 @@ The lantern-player treats `ac` and `code` as different params. Don't mix them up
 For a visual interface, open `qr-manager.html` in a browser. Upload your
 kit config JSON to see all QR codes, test each URL, and run a pre-print
 checklist. No server needed — it runs entirely in the browser.
-
-[lantern-kit]: https://github.com/ZQM-Computing/zqm-labs/tree/main/lantern-kit

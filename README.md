@@ -100,3 +100,17 @@ Questions? <zqmcomputing@gmail.com> · <https://zqmlabs.com>
   <a href="https://github.com/ZQM-Computing">ZQM Computing</a>
 </p>
 <!-- ZQM-FOOTER-END -->
+
+## Field-readiness gate
+
+The checklist and print instructions are operational guidance; they do not prove that a particular route or kit has been physically validated. Before an event, record the specific edition and player version, then verify:
+
+- Permission and safe placement for every sign; no placement requiring entry onto private property or unsafe crossing.
+- QR readability from realistic approach distance, at actual print size, in expected lighting and weather.
+- GPS behavior on the intended devices and route, including drift and no-fix conditions.
+- The manual/observation fallback for people without GPS, location permission, or a working camera.
+- A practical accessible alternative for each checkpoint and a clear stop/withdrawal option.
+- Battery/network failure, offline resume, and who to contact if the game cannot continue.
+- Content, answer key, route map, and print set all match the same released edition.
+
+Record failures and adaptations in the [playtest repository](https://github.com/ZQM-Labs/playtests). Never describe a route as safe or accessible solely because the digital player works in a browser.
