@@ -1,43 +1,64 @@
 name: Supply Chain Security Scan
+
 on:
   push:
-    branches: [ main, master ]
+    branches: [main, master]
   pull_request:
-    branches: [ main, master ]
+    branches: [main, master]
   schedule:
-    - cron: '0 0 * * 1'
+    - cron: "0 0 * * 1"
 
 permissions:
   contents: read
-  security-events: write
-  issues: write
 
 jobs:
-  scan:
+  dependency-audit:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v7
+      - uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
-      - name: Run supply chain scan (vendored stdlib script)
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Audit Python dependencies when manifests exist
+        shell: bash
         run: |
-          python .github/scripts/snyk_replacement.py \
-            --repo ${{ github.repository }} \
-            --output both \
-            --pr ${{ github.event.pull_request.number || 0 }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Upload SARIF (best-effort; needs GHAS on private repos)
-        uses: github/codeql-action/upload-sarif@v4
-        if: always()
-        continue-on-error: true
-        with:
-          sarif_file: .zqm-security-reports/
-      - name: Upload findings artifact
-        uses: actions/upload-artifact@v7
-        with:
-          name: supply-chain-scan-${{ github.run_id }}
-          path: .zqm-security-reports/
-          retention-days: 30
-        if: always()
+          set -euo pipefail
+          found=0
+          for manifest in requirements.txt requirements-dev.txt; do
+            if [ -f "$manifest" ]; then
+              found=1
+              python -m pip install --disable-pip-version-check pip-audit
+              pip-audit -r "$manifest"
+            fi
+          done
+          if [ -f pyproject.toml ]; then
+            found=1
+            python -m pip install --disable-pip-version-check pip-audit
+            pip-audit .
+          fi
+          if [ "$found" -eq 0 ]; then
+            echo "No Python dependency manifest found; Python audit not applicable."
+          fi
+      - name: Audit npm dependencies when a lockfile exists
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -f package-lock.json ]; then
+            npm ci
+            npm audit --audit-level=high
+          else
+            echo "No package-lock.json found; npm audit not applicable."
+          fi
+      - name: Audit Go dependencies when a module exists
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -f go.mod ]; then
+            go version
+            go run golang.org/x/vuln/cmd/govulncheck@latest ./...
+          else
+            echo "No go.mod found; Go audit not applicable."
+          fi
