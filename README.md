@@ -114,3 +114,10 @@ The checklist and print instructions are operational guidance; they do not prove
 - Content, answer key, route map, and print set all match the same released edition.
 
 Record failures and adaptations in the [playtest repository](https://github.com/ZQM-Labs/playtests). Never describe a route as safe or accessible solely because the digital player works in a browser.
+
+
+## Booking, fulfillment, and event approval
+
+Checkout is the intended customer booking/purchase model, but this toolkit does not establish that checkout is live or that any specific order/fulfillment workflow is operating. Do not promise a booking, kit delivery date, included support call, or refund/rescheduling outcome unless the current product listing and written customer terms confirm it.
+
+Before an event is accepted, the responsible owner should verify the order/confirmation, edition and kit version, venue permission, event date, fulfillment plan, organizer support contact, and cancellation/weather contingency. Keep proof of purchase separate from the field-readiness checklist: a paid order does not mean the route, QR signs, safety, or accessibility checks have passed. If any critical field-readiness item is unresolved, escalate or postpone rather than treating it as approved.
