@@ -1,6 +1,6 @@
 # Security Policy
 
-Report vulnerabilities to zqmcomputing@gmail.com.
+Report vulnerabilities to [zqmcomputing@gmail.com](mailto:zqmcomputing@gmail.com).
 
 ## Scope
 
