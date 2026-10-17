@@ -21,12 +21,14 @@ space. *Games, gear & a little mischief.*
 1. [`guides/setup-checklist.md`](guides/setup-checklist.md) — the
    week-by-week countdown: what to do 2 weeks out, 1 week out, the day
    before, and day-of.
-2. [`guides/print-specs.md`](guides/print-specs.md) — how to print the
+2. [`guides/qr-generator.md`](guides/qr-generator.md) — generate, test,
+   and print QR signs for your kit (uses the lantern-kit generator).
+3. [`guides/print-specs.md`](guides/print-specs.md) — how to print the
    QR signs so they scan in sunlight, rain, and low light.
-3. [`guides/day-of-troubleshooting.md`](guides/day-of-troubleshooting.md)
+4. [`guides/day-of-troubleshooting.md`](guides/day-of-troubleshooting.md)
    — QR won't scan, GPS drift, ties, rain plan. Read once before the
    event; keep on your phone during it.
-4. [`faq.md`](faq.md) — the questions organizers actually ask.
+5. [`faq.md`](faq.md) — the questions organizers actually ask.
 
 ## The 60-second version
 
