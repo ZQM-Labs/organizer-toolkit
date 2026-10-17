@@ -51,3 +51,14 @@ jobs:
         with:
           languages: ${{ needs.detect.outputs.languages }}
       - uses: github/codeql-action/analyze@v4
+        with:
+          upload: false
+          output: codeql-results
+      - name: Preserve CodeQL results as a workflow artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: codeql-results-${{ github.run_id }}
+          path: codeql-results
+          if-no-files-found: warn
+          retention-days: 30
