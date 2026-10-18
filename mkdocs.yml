@@ -1,0 +1,21 @@
+site_name: organizer-toolkit
+site_description: Organizer toolkit documentation
+site_author: ZQM Labs
+repo_url: https://github.com/ZQM-Labs/organizer-toolkit
+
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - search.suggest
+    - search.highlight
+
+markdown_extensions:
+  - admonition
+  - codehilite
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
