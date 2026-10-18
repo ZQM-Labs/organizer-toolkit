@@ -123,3 +123,15 @@ Record failures and adaptations in the [playtest repository](https://github.com/
 - [quest-packs](https://github.com/ZQM-Labs/quest-packs) — ready-to-play quest packs
 - [playtests](https://github.com/ZQM-Labs/playtests) — playtest protocol and results
 - [zqmlabs-site](https://github.com/ZQM-Labs/zqmlabs-site) — the public website
+
+## Installation
+
+```bash
+pip install -e .
+```
+
+Requires Python 3.11+.
+
+## License
+
+MIT — see [LICENSE](LICENSE).
