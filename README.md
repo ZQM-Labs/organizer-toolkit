@@ -114,3 +114,12 @@ The checklist and print instructions are operational guidance; they do not prove
 - Content, answer key, route map, and print set all match the same released edition.
 
 Record failures and adaptations in the [playtest repository](https://github.com/ZQM-Labs/playtests). Never describe a route as safe or accessible solely because the digital player works in a browser.
+
+## Related repos
+
+- [lantern-player](https://github.com/ZQM-Labs/lantern-player) — the player PWA
+- [wisps-tracker](https://github.com/ZQM-Labs/wisps-tracker) — team tracking backend
+- [quest-authoring](https://github.com/ZQM-Labs/quest-authoring) — quest pack spec, validator, and generator
+- [quest-packs](https://github.com/ZQM-Labs/quest-packs) — ready-to-play quest packs
+- [playtests](https://github.com/ZQM-Labs/playtests) — playtest protocol and results
+- [zqmlabs-site](https://github.com/ZQM-Labs/zqmlabs-site) — the public website
