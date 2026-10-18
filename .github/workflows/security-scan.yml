@@ -20,7 +20,7 @@ jobs:
       languages: ${{ steps.detect.outputs.languages }}
       has_code: ${{ steps.detect.outputs.has_code }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - id: detect
         shell: bash
         run: |
@@ -46,7 +46,7 @@ jobs:
     if: needs.detect.outputs.has_code == 'true'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: github/codeql-action/init@v4
         with:
           languages: ${{ needs.detect.outputs.languages }}
