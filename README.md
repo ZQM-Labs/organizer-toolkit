@@ -115,7 +115,7 @@ Record failures and adaptations in the [playtest repository](https://github.com/
 ## Related repos
 
 - [quest-player](https://github.com/ZQM-Labs/quest-player) — the player PWA
-- [quest-analytics](https://github.com/ZQM-Labs/quest-analytics) — team analytics + tracking backend
+- quest-analytics — team analytics + tracking backend (private repo)
 - [quest-authoring](https://github.com/ZQM-Labs/quest-authoring) — quest pack spec, validator, and generator
 - [quest-packs](https://github.com/ZQM-Labs/quest-packs) — ready-to-play quest packs
 - [playtests](https://github.com/ZQM-Labs/playtests) — playtest protocol and results
