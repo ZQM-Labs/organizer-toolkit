@@ -147,3 +147,10 @@ To validate locally:
 # Run documentation checks
 python scripts/check_docs.py
 ```
+
+## Usage
+
+Work through the setup checklist before your event, print your materials
+using the print specs, and keep the day-of troubleshooting guide handy
+while the game runs. Start with [Start here](#start-here) if this is your
+first event.
