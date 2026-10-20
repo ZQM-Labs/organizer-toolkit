@@ -7,6 +7,7 @@
 <!-- Why is this change needed? -->
 
 ## Type of Change
+
 - [ ] Bug fix
 - [ ] New feature
 - [ ] Documentation update
@@ -14,6 +15,7 @@
 - [ ] Other
 
 ## Checklist
+
 - [ ] Code follows project style
 - [ ] Tests added/updated
 - [ ] Documentation updated
