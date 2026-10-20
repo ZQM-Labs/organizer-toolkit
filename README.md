@@ -16,6 +16,14 @@ Everything an organizer ("Lab Assistant") needs to run a
 **ZQM Labs — Z's Quests & Mischief** scavenger-hunt game in their own
 space. *Games, gear & a little mischief.*
 
+## Repository role and status
+
+**Status:** Active, public. Organizer ("Lab Assistant") operations documentation for ZQM Labs games.
+
+**What this repository is:** The day-of operations kit for organizers: the setup checklist, QR sign generation guidance, print specs, day-of troubleshooting guide, and FAQ (`guides/`, `faq.md`).
+
+**What it contributes:** It is the operational half of running an event — everything an organizer needs between receiving a kit and event night. Game content itself lives in quest-packs; field failures and adaptations found using this toolkit are recorded in playtests.
+
 ## Start here
 
 1. [`guides/setup-checklist.md`](guides/setup-checklist.md) — the
@@ -118,7 +126,7 @@ Record failures and adaptations in the [playtest repository](https://github.com/
 
 ## Related repos
 
-- [lantern-player](https://github.com/ZQM-Labs/lantern-player) — the player PWA
+- [quest-player](https://github.com/ZQM-Labs/quest-player) — the player PWA
 - [quest-analytics](https://github.com/ZQM-Labs/quest-analytics) — team analytics + tracking backend
 - [quest-authoring](https://github.com/ZQM-Labs/quest-authoring) — quest pack spec, validator, and generator
 - [quest-packs](https://github.com/ZQM-Labs/quest-packs) — ready-to-play quest packs
