@@ -81,18 +81,6 @@ The toolkit supports local hosts today. Worldwide event fulfillment,
 translation coverage, and a global organizer network should not be assumed
 unless separately confirmed.
 
-## More from ZQM Labs
-
-- [quest-packs][qp] — edition catalog + free sample quest
-- [quest-authoring][qa] — quest-pack spec, guide, and validator
-- [playtests][pt] — playtest protocol and results
-- [zqmlabs-site][site] — the public website
-
-[qp]: https://github.com/ZQM-Labs/quest-packs
-[qa]: https://github.com/ZQM-Labs/quest-authoring
-[pt]: https://github.com/ZQM-Labs/playtests
-[site]: https://github.com/ZQM-Labs/zqmlabs-site
-
 Questions? <zqmcomputing@gmail.com> · <https://zqmlabs.com>
 
 *Play more. Plan less.*
@@ -132,14 +120,6 @@ Record failures and adaptations in the [playtest repository](https://github.com/
 - [quest-packs](https://github.com/ZQM-Labs/quest-packs) — ready-to-play quest packs
 - [playtests](https://github.com/ZQM-Labs/playtests) — playtest protocol and results
 - [zqmlabs-site](https://github.com/ZQM-Labs/zqmlabs-site) — the public website
-
-## Installation
-
-```bash
-pip install -e .
-```
-
-Requires Python 3.11+.
 
 ## License
 
