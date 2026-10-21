@@ -5,11 +5,12 @@ Verifies that generated QR codes encode the correct URLs and that
 URL parameters match the kit config. Run after generate_qr_signs.py.
 
 Usage: python3 test_qr_signs.py <kit-config.json>
+Or under pytest: test_example_kit_config() checks the bundled example.
 """
 import json, re, sys
 from urllib.parse import urlparse, parse_qs
 
-def test_kit_config(cfg_path):
+def check_kit_config(cfg_path):
     with open(cfg_path) as f:
         cfg = json.load(f)
 
@@ -80,7 +81,14 @@ def test_kit_config(cfg_path):
     print("All QR tests passed ✓")
     return 0
 
+def test_example_kit_config():
+    """pytest entry point: the bundled example kit must verify clean."""
+    from pathlib import Path
+    cfg = Path(__file__).with_name("kit-config.example.json")
+    assert check_kit_config(str(cfg)) == 0
+
+
 if __name__ == "__main__":
     if len(sys.argv) < 2:
         sys.exit("Usage: python3 test_qr_signs.py <kit-config.json>")
-    sys.exit(test_kit_config(sys.argv[1]))
+    sys.exit(check_kit_config(sys.argv[1]))
