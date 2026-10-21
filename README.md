@@ -39,6 +39,22 @@ space. *Games, gear & a little mischief.*
    event; keep on your phone during it.
 5. [`faq.md`](faq.md) — the questions organizers actually ask.
 
+## Installation
+
+No build step: the toolkit is Markdown guides, templates, and small Python
+scripts. Clone the repo and work from its root:
+
+```bash
+git clone https://github.com/ZQM-Labs/organizer-toolkit.git
+cd organizer-toolkit
+```
+
+To run the documentation checks locally (Python 3, no extra dependencies):
+
+```bash
+python scripts/check_docs.py
+```
+
 ## The 60-second version
 
 You get a kit: 6 QR signs + a start poster, a placement map, an answer key,
