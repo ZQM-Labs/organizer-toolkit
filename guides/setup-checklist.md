@@ -24,8 +24,11 @@
 ## Day before
 
 - [ ] Place the signs. Tape/stake at eye level, QR facing the approach path.
-- [ ] Walk the full route in order, scanning every QR yourself.
-  Fix anything that doesn't scan instantly.
+  Keep signs out of tree-canopy shade — dappled or shaded signs scan
+  slowly. If a stop is under trees, raise the sign to about 5.5 ft or
+  shift it ~2 ft into even light / better sun exposure.
+- [ ] Walk the full route in order, scanning every QR yourself, in the
+  same light you'll run in. Fix anything that doesn't scan instantly.
 - [ ] Check the forecast; decide by morning whether the rain plan (below) activates.
 
 ## Day of

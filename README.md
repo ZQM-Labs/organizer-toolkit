@@ -30,7 +30,8 @@ space. *Games, gear & a little mischief.*
    week-by-week countdown: what to do 2 weeks out, 1 week out, the day
    before, and day-of.
 2. [`guides/qr-generator.md`](guides/qr-generator.md) — generate, test,
-   and print QR signs for your kit (uses the lantern-kit generator).
+   and print QR signs for your kit (uses the in-repo
+   [`qr-kit/`](qr-kit/) generator).
 3. [`guides/print-specs.md`](guides/print-specs.md) — how to print the
    QR signs so they scan in sunlight, rain, and low light.
 4. [`guides/day-of-troubleshooting.md`](guides/day-of-troubleshooting.md)
