@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 300 300" role="img" aria-labelledby="badgeTitle badgeDesc">
+  <title id="badgeTitle">Lantern Keeper finisher badge</title>
+  <desc id="badgeDesc">A round orange-and-cream finisher badge: a glowing lantern emoji above the words LANTERN KEEPER, with the game title and year below. Print at 3 inches, one per player.</desc>
+  <!-- Lantern Keeper finisher badge — print at 3", one per kid. -->
+  <circle cx="150" cy="150" r="140" fill="#e07b24"/>
+  <circle cx="150" cy="150" r="118" fill="#fff7ea"/>
+  <text x="150" y="118" text-anchor="middle" font-size="52">🏮</text>
+  <text x="150" y="168" text-anchor="middle" font-family="sans-serif" font-size="21" font-weight="bold" fill="#2b2118">LANTERN</text>
+  <text x="150" y="196" text-anchor="middle" font-family="sans-serif" font-size="21" font-weight="bold" fill="#2b2118">KEEPER</text>
+  <text x="150" y="228" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#2b2118">{{GAME_TITLE}} · {{YEAR}}</text>
+</svg>

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="612" height="792" viewBox="0 0 612 792" role="img" aria-labelledby="signTitle signDesc">
+  <title id="signTitle">Quest stop sign — Z's Quests &amp; Mischief</title>
+  <desc id="signDesc">A printable US Letter quest-stop sign: brand header, stop heading, a large scannable QR code that unlocks the checkpoint in the player app, and placement instructions in the footer.</desc>
+  <!-- Master sign layout (US Letter @72dpi). qr-kit replaces the
+       text + QR placeholders at generation time; edit styling here. -->
+  <rect width="612" height="792" fill="#fff7ea"/>
+  <rect x="24" y="24" width="564" height="744" rx="24" fill="none" stroke="#e07b24" stroke-width="6"/>
+  <text x="306" y="90" text-anchor="middle" font-family="sans-serif" font-size="16" letter-spacing="3" fill="#2b2118">🏮 Z’S QUESTS &amp; MISCHIEF</text>
+  <text x="306" y="150" text-anchor="middle" font-family="sans-serif" font-size="38" font-weight="bold" fill="#2b2118">{{HEADING}}</text>
+  <text x="306" y="190" text-anchor="middle" font-family="sans-serif" font-size="19" fill="#2b2118">{{SUB}}</text>
+  <g id="qr-placeholder"><rect x="156" y="230" width="300" height="300" fill="#ffffff" stroke="#2b2118" stroke-width="2"/></g>
+  <text x="306" y="580" text-anchor="middle" font-family="sans-serif" font-size="16" fill="#2b2118">{{FOOT}}</text>
+</svg>

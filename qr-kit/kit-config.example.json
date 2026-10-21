@@ -1,0 +1,51 @@
+{
+  "access_code": "WISP-2026-DEMO",
+  "community": "Demo Neighborhood HOA",
+  "finale": {
+    "location": "Clubhouse patio",
+    "treat": "Candy cauldron + Lantern Keeper badges"
+  },
+  "game_title": "Wisp's Lost Lanterns",
+  "kit_id": "DEMO",
+  "play_base_url": "https://zqmlabs.com/games/hunt-for-wisps/play/",
+  "scare_default": "cozy",
+  "stops": [
+    {
+      "code": "LANTERN-1",
+      "name": "The Welcome Pumpkin",
+      "order": 1,
+      "placement": "Entrance sign, eye height for kids"
+    },
+    {
+      "code": "LANTERN-2",
+      "name": "The Whispering Oak",
+      "order": 2,
+      "placement": "Big oak by the pond path"
+    },
+    {
+      "code": "LANTERN-3",
+      "name": "The Giggling Graveyard (pretend!)",
+      "order": 3,
+      "placement": "Foam tombstones, common green"
+    },
+    {
+      "code": "LANTERN-4",
+      "name": "The Spider's Counting Web",
+      "order": 4,
+      "placement": "Gazebo corner"
+    },
+    {
+      "code": "LANTERN-5",
+      "name": "The Owl's Night Watch",
+      "order": 5,
+      "placement": "Tall pine near the trail fork"
+    },
+    {
+      "code": "LANTERN-6",
+      "name": "The Lantern Parade Ground",
+      "order": 6,
+      "placement": "Finale table, clubhouse patio"
+    }
+  ],
+  "window": "Oct 30 \u2013 Nov 1, 2026"
+}
