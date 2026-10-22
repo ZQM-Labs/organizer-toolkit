@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block extrahead %}
+<meta property="og:title" content="{% if page and page.title %}{{ page.title }} · {% endif %}{{ config.site_name }}">
+<meta property="og:description" content="{{ config.site_description }}">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ page.canonical_url }}">
+<meta property="og:image" content="https://zqmlabs.com/img/social-card-evergreen.webp">
+<meta name="twitter:card" content="summary_large_image">
+{% endblock %}

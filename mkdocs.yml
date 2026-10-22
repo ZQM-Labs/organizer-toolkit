@@ -1,10 +1,11 @@
-site_name: organizer-toolkit
+site_name: Organizer Toolkit
 site_description: Organizer toolkit documentation
 site_author: ZQM Labs
 repo_url: https://github.com/ZQM-Labs/organizer-toolkit
 
 theme:
   name: material
+  custom_dir: docs/overrides
   features:
     - navigation.tabs
     - navigation.sections
