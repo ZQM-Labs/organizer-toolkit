@@ -55,7 +55,7 @@ Definitions (player code):
 
 Player formula, for organizers who have the finale stats (lower wins):
 
-```
+```text
 score = hintsUsed × 1000 − cleanSolves × 150 + minutes + wrongGuesses × 10 − verified × 5
 (unfinished team: score = 1,000,000,000 + hintsUsed × 100)
 ```
@@ -105,4 +105,3 @@ Reading it:
   walk them to the next stop. “Fun beats fairness” (toolkit rule) — but a
   walked team still keeps whatever hints/solves the tally shows; do not
   retroactively clean a hinted solve.
-
