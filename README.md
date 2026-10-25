@@ -12,9 +12,7 @@
 <!-- markdownlint-enable MD033 -->
 <!-- ZQM-END -->
 
-Everything an organizer ("Lab Assistant") needs to run a
-**ZQM Labs — Z's Quests & Mischief** scavenger-hunt game in their own
-space. *Games, gear & a little mischief.*
+The **ZQM Labs scavenger-hunt organizer toolkit** helps a host prepare and run a location-based game in a school, workplace, neighborhood, or community venue. It covers setup checklists, QR-sign generation and printing, event-day troubleshooting, and FAQs. Organizers should verify venue permissions, supervision, weather plans, accessibility, and the specific kit's requirements before an event.
 
 ## Repository role and status
 
