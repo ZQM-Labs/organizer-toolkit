@@ -37,4 +37,4 @@ stuck, walk them to the next stop yourself. Fun beats fairness.
 See the rain plan in the [setup checklist](setup-checklist.md). When in doubt,
 postpone — wet phones and wet signs make nobody happy.
 
-Still stuck? <zqmcomputing@gmail.com> — we monitor it during every event window.
+Still stuck? <zqmcomputing@gmail.com> — day-of support is limited and best-effort, and replies may be delayed on Halloween. Work through the guide above first.

@@ -9,8 +9,8 @@
 - [ ] Walk your space and choose 6 waypoints, 2–4 minutes apart
   on foot. Note anything that could move or vanish (parked cars,
   decorations).
-- [ ] Send us your waypoint list (or invite us to the setup call)
-  so the quest text matches what players will actually see.
+- [ ] Check the kit's six generic stops against your waypoints —
+  the kit is not rewritten for your space.
 
 ## 1 week out
 
