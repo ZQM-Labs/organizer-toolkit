@@ -20,8 +20,7 @@ A backyard works. Stops can be 20 feet apart — the puzzles carry the game,
 not the hiking.
 
 **Can we customize the quest text?**
-Yes — that's what the setup call is for. Tell us what's actually at each
-waypoint and the quest gets written around your space.
+No. Flat kits are generic — the same stories and puzzles for every buyer, not written around your space, and there is no setup call to customize them. Choose waypoints that fit the kit's six stops as closely as your space allows.
 
 **Who sees our photos/scores?**
 Only you, unless you share them with us for the community showcase (with
@@ -29,6 +28,6 @@ permission, always).
 
 **What does the kit cost?**
 Community tier $199 · Office tier $349–499. One flat fee, yours to replay
-for your group.
+for your group during the event window.
 
 <zqmcomputing@gmail.com> · <https://zqmlabs.com>
