@@ -2,7 +2,6 @@ site_name: Organizer Toolkit
 site_description: Organizer toolkit documentation
 site_author: ZQM Labs
 repo_url: https://github.com/ZQM-Labs/organizer-toolkit
-
 theme:
   name: material
   custom_dir: docs/overrides
@@ -11,12 +10,15 @@ theme:
     - navigation.sections
     - search.suggest
     - search.highlight
-
 markdown_extensions:
   - admonition
   - codehilite
   - toc:
       permalink: true
-
 nav:
   - Home: index.md
+  - Setup checklist: guides/setup-checklist.md
+  - QR generator: guides/qr-generator.md
+  - Print specs: guides/print-specs.md
+  - Day-of troubleshooting: guides/day-of-troubleshooting.md
+  - FAQ: faq.md

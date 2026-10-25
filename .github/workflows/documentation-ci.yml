@@ -19,3 +19,7 @@ jobs:
           python-version: "3.12"
       - name: Check relative Markdown links
         run: python .github/scripts/check_markdown_links.py
+      - name: Check docs/ copies are in sync with sources
+        run: python scripts/check_docs_sync.py
+      - name: MkDocs strict build
+        run: pip install mkdocs mkdocs-material && mkdocs build --strict
