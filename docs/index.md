@@ -22,8 +22,7 @@ adaptations found using this toolkit are recorded in playtests.
 You get a kit: 6 QR signs + a start poster, a placement map, an answer key,
 and a link players open on their phones (no app). You print the signs,
 place them, pick a scare level on the Dial (Cozy / Spooky / After Dark /
-Overdrive), and the game runs itself. One setup call with us before the
-event is included in every kit.
+Overdrive), and the game runs itself. Every kit is the same generic kit — no setup call, no customized stories or puzzles.
 
 ## Full toolkit
 
