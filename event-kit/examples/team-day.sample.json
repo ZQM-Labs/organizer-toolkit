@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "event_id": "team-day-demo",
+  "event_title": "Team Collaboration Day — Planning Example",
+  "theme": "team",
+  "timezone": "America/New_York",
+  "start_local": "2027-09-18T14:00",
+  "duration_minutes": 120,
+  "team_slots": 5,
+  "stagger_minutes": 10,
+  "finale_minutes": 25,
+  "venue_label": "Approved workplace or public venue to be selected",
+  "surprise_enabled": true
+}
