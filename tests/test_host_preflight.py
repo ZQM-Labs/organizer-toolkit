@@ -177,6 +177,29 @@ class KitPreflightTests(unittest.TestCase):
             for secret in (cfg["access_code"], "PRIVATE-STOP-CODE"):
                 self.assertNotIn(secret, rejected.stdout + rejected.stderr)
 
+    def test_printed_sign_order_is_numeric_even_if_config_is_reversed(self):
+        cfg = example()
+        cfg["stops"] = list(reversed(cfg["stops"]))
+        pack = matching_pack(cfg)
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            kit_file = root / "kit.json"
+            pack_file = root / "pack.json"
+            output = root / "signs.html"
+            kit_file.write_text(json.dumps(cfg), encoding="utf-8")
+            pack_file.write_text(json.dumps(pack), encoding="utf-8")
+            proc = subprocess.run(
+                [sys.executable, str(QR / "generate_qr_signs.py"),
+                 str(kit_file), str(output), "--pack", str(pack_file)],
+                capture_output=True, text=True, timeout=30,
+            )
+            self.assertEqual(proc.returncode, 0, proc.stderr)
+            body = output.read_text(encoding="utf-8")
+            positions = [body.index(f"Stop {i}:") for i in range(1, 7)]
+            self.assertEqual(positions, sorted(positions))
+            self.assertEqual(body.count('class="sign"'), 7)
+            self.assertNotIn("NOT VALIDATED AGAINST A QUEST PACK", body)
+
     def test_generator_honors_pack_and_does_not_overwrite(self):
         cfg = example()
         pack = matching_pack(cfg)
