@@ -46,6 +46,8 @@ displayed text, not removed from the private link itself.
 
 If using optional `poster_art` or per-stop `art`, keep source files inside the cloned repository. The generator now writes content-addressed files in the output's `art/` folder, so two different `logo.png` files used on separate stops cannot silently replace one another. Source images larger than 8 MiB, existing tampered asset files and output symlink destinations are rejected. It does not silently overwrite a prior HTML file; `--force` explicitly replaces a regular HTML file using a staged write but never overwrites a mismatched art asset.
 
+The generator first prepares all seven signs and optional images in a private staging directory. It then publishes complete assets and writes the complete private HTML file **last**. If publishing fails, newly added assets from that attempt are rolled back while earlier sign files remain unchanged. On supported POSIX filesystems, new HTML and art files are owner-only. Previously existing matching art keeps its prior permissions and must be reviewed separately.
+
 Retain the generated `art/` assets beside the private `signs.html`, and check every picture and QR symbol in an actual browser and printed copy. These safeguards do not prove art rights, print quality, or field readiness.
 
 ## What you get

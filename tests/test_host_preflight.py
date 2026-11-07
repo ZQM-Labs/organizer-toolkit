@@ -320,6 +320,105 @@ class KitPreflightTests(unittest.TestCase):
             self.assertEqual(real.read_text(), "must not be replaced")
             self.assertTrue(output.is_symlink())
 
+    def test_private_bundle_publishes_complete_html_and_assets_only(self):
+        import generate_qr_signs as generator
+        import os
+        import stat
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            destination = root / "out"
+            destination.mkdir()
+            html = destination / "signs.html"
+            stage = destination / ".qr-stage-test"
+            (stage / "art").mkdir(parents=True)
+            asset = stage / "art" / "asset-123456789012345678901234.png"
+            asset.write_bytes(b"small synthetic artwork")
+            generator.publish_private_bundle(str(stage), str(html), "COMPLETE SIGN BUNDLE")
+            self.assertEqual(html.read_text(), "COMPLETE SIGN BUNDLE")
+            self.assertEqual((destination / "art" / asset.name).read_bytes(), asset.read_bytes())
+            if os.name != "nt":
+                self.assertEqual(stat.S_IMODE(html.stat().st_mode), 0o600)
+                self.assertEqual(stat.S_IMODE((destination / "art" / asset.name).stat().st_mode), 0o600)
+
+    def test_existing_html_rolls_back_newly_linked_art(self):
+        import generate_qr_signs as generator
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            html = root / "signs.html"
+            html.write_text("existing private signs", encoding="utf-8")
+            stage = root / "stage"
+            (stage / "art").mkdir(parents=True)
+            asset = stage / "art" / "asset-123456789012345678901234.png"
+            asset.write_bytes(b"new art")
+            with self.assertRaises(FileExistsError):
+                generator.publish_private_bundle(str(stage), str(html), "new signs")
+            self.assertEqual(html.read_text(), "existing private signs")
+            self.assertFalse((root / "art" / asset.name).exists())
+            self.assertFalse((root / "art").exists())
+
+    def test_existing_asset_conflict_preserves_old_html_and_art(self):
+        import generate_qr_signs as generator
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            html = root / "signs.html"
+            html.write_text("previous signs", encoding="utf-8")
+            artwork = root / "art"
+            artwork.mkdir()
+            stage = root / "stage"
+            (stage / "art").mkdir(parents=True)
+            filename = "asset-123456789012345678901234.png"
+            (stage / "art" / filename).write_bytes(b"new asset")
+            (artwork / filename).write_bytes(b"untouched prior asset")
+            with self.assertRaisesRegex(preflight.PreflightError, "collision"):
+                generator.publish_private_bundle(str(stage), str(html), "new signs", force=True)
+            self.assertEqual(html.read_text(), "previous signs")
+            self.assertEqual((artwork / filename).read_bytes(), b"untouched prior asset")
+
+    def test_force_bundle_replaces_html_atomically_and_reuses_identical_asset(self):
+        import generate_qr_signs as generator
+        import os
+        import stat
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            html = root / "signs.html"
+            html.write_text("old signs", encoding="utf-8")
+            assets = root / "art"
+            assets.mkdir()
+            stage = root / "stage"
+            (stage / "art").mkdir(parents=True)
+            filename = "asset-123456789012345678901234.png"
+            payload = b"identical existing artwork"
+            (stage / "art" / filename).write_bytes(payload)
+            (assets / filename).write_bytes(payload)
+            generator.publish_private_bundle(str(stage), str(html), "new complete signs", force=True)
+            self.assertEqual(html.read_text(), "new complete signs")
+            self.assertEqual((assets / filename).read_bytes(), payload)
+            if os.name != "nt":
+                self.assertEqual(stat.S_IMODE(html.stat().st_mode), 0o600)
+
+    def test_art_rendering_failure_stays_inside_private_staging(self):
+        import generate_qr_signs as generator
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "good.png").write_bytes(b"first asset")
+            cfg = example()
+            cfg["poster_art"] = "good.png"
+            cfg["stops"][4]["art"] = "missing-later.png"
+            destination = root / "out"
+            destination.mkdir()
+            with tempfile.TemporaryDirectory(dir=destination, prefix=".qr-stage-") as staged:
+                with self.assertRaisesRegex(preflight.PreflightError, "configured artwork is missing"):
+                    generator.render_signs(cfg, str(root), staged, cfg["play_base_url"])
+                self.assertTrue(list((Path(staged) / "art").iterdir()))
+                self.assertFalse((destination / "art").exists())
+                self.assertFalse((destination / "signs.html").exists())
+            self.assertEqual(list(destination.iterdir()), [])
+
     def test_mismatched_generator_refuses_to_write_signs(self):
         cfg = example()
         wrong_pack = matching_pack(cfg)
