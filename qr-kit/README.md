@@ -54,6 +54,18 @@ this repository.
 
 **Browser security note:** The QR Manager never displays the start access-code value as page text, and copying or opening its link requires a deliberate click. It uses text-only DOM insertion and events rather than interpolated inline handlers. The original browser parser may silently accept duplicate JSON object keys, which is why the Python `preflight.py` remains mandatory before printing. The manager does not send or retain uploaded files or contacts; opening a test link **does** navigate to the supplied player server with that link's parameters.
 
+## Consistency test between Python and browser previews
+
+The offline Python preflight is the **authoritative** sign-generation gate. The browser preview is advisory, but its shared rules must not silently drift. Run the cross-language regression suite from the repository root with Python 3.12 and Node 22:
+
+```bash
+node --test qr-kit/qr-manager.test.cjs qr-kit/qr-python-parity.test.cjs
+```
+
+The parity tests submit the same 20 synthetic valid/invalid kit and pack cases to both implementations (including valid six-stop pairs, duplicate or missing stops, malformed tokens, mismatched pack data, insecure player URLs and incorrect Dial levels). They assert accept/reject results only, not secret values, live access, GPS accuracy, real-world booking, or server authorization.
+
+The browser cannot detect duplicate JSON keys after `JSON.parse`, and it does not process sign artwork; those protections remain in the strict Python file preflight and sign generator. Passing shared structural fixtures is therefore **not** a reason to skip the authoritative Python preflight or field tests.
+
 ## Provenance & license
 
 Originally developed as `lantern-kit` inside the private

@@ -115,6 +115,6 @@ jobs:
         with:
           node-version: "22"
       - name: Test local browser QR manager without analytics or browser network
-        run: node --test qr-kit/qr-manager.test.cjs
+        run: node --test qr-kit/qr-manager.test.cjs qr-kit/qr-python-parity.test.cjs
       - name: Check repository documentation
         run: python scripts/check_docs.py
