@@ -8,8 +8,8 @@ the sign is the checkpoint unlock in the quest player. The start poster QR
 encodes the kit's access code (as ?ac=) for team registration; stop signs
 use ?code= for the sign code — the player treats them as different params.
 """
-import html, io, json, os, shutil, sys
-from urllib.parse import quote
+import argparse, html, os, shutil, sys
+from preflight import KIT_BYTES, PACK_BYTES, PreflightError, read_json, check_kit, check_pack_alignment, poster_url, stop_url, verify_url_shapes
 
 try:
     import segno
@@ -29,7 +29,7 @@ def qr_svg(content, scale=10):
     """
     qr = segno.make(content, error="h")
     if qr.version > 10:  # absurdly dense for a 4.2in print; payload likely wrong
-        print(f"  warning: QR for {content[:40]!r}… is version {qr.version} — check payload length",
+        print(f"  warning: QR payload is version {qr.version} — shorten private identifiers if possible",
               file=sys.stderr)
     return qr.svg_inline(scale=scale, border=4)
 
@@ -58,7 +58,9 @@ def art_html(path, root, outdir, alt=""):
     """Copy an art file next to the signs and return its <img> block (or "")."""
     if not path:
         return ""
-    src = os.path.join(root, path)
+    src = os.path.realpath(os.path.join(root, path))
+    if os.path.commonpath((os.path.realpath(root), src)) != os.path.realpath(root):
+        raise PreflightError("art path escapes repository root")
     if not os.path.isfile(src):
         print(f"  warning: art not found: {path} — skipping", file=sys.stderr)
         return ""
@@ -68,41 +70,38 @@ def art_html(path, root, outdir, alt=""):
     return f'<div class="art"><img src="art/{os.path.basename(path)}" alt="{tx(alt)}"></div>' 
 
 def main():
-    if len(sys.argv) < 2:
-        sys.exit("Usage: python3 generate_qr_signs.py <kit-config.json> [out.html]")
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("config", help="Private QR sign kit configuration")
+    parser.add_argument("output", nargs="?", default="out/signs.html")
+    parser.add_argument("--pack", help="Six-stop quest pack; required to verify code/name alignment")
+    parser.add_argument("--force", action="store_true", help="Explicitly overwrite a prior output")
+    args = parser.parse_args()
     try:
-        cfg = json.load(open(sys.argv[1], encoding="utf-8"))
-    except FileNotFoundError:
-        sys.exit(f"Kit config not found: {sys.argv[1]}")
-    except json.JSONDecodeError as e:
-        sys.exit(f"Invalid JSON in {sys.argv[1]}: {e}")
-    for key in ("play_base_url", "kit_id", "game_title", "community",
-                "window", "access_code", "stops"):
-        if key not in cfg:
-            sys.exit(f"Kit config missing required key: {key!r}")
-    for i, st in enumerate(cfg["stops"]):
-        if not isinstance(st, dict):
-            sys.exit(f"Stop #{i} is not an object: {st!r}")
-        for fkey in ("order", "name", "code", "placement"):
-            if fkey not in st or st[fkey] in (None, ""):
-                sys.exit(f"Stop #{i} missing required field {fkey!r} "
-                         f"— each stop needs order, name, code, placement")
-    orders = [st.get("order") for st in cfg["stops"]]
-    if len(set(orders)) != len(orders):
-        sys.exit(f"Duplicate stop order values in kit config: {orders}")
+        cfg = read_json(args.config, KIT_BYTES)
+        check_kit(cfg)
+        verify_url_shapes(cfg)
+        if args.pack:
+            check_pack_alignment(cfg, read_json(args.pack, PACK_BYTES))
+    except (PreflightError, OSError) as exc:
+        parser.error("Kit preflight failed: " + str(exc))
+    if not args.pack:
+        print("WARNING: sign kit has NOT been matched to the actual six-stop pack; "
+              "do not distribute before pack validation and field tests", file=sys.stderr)
+    out = args.output
+    if os.path.exists(out) and not args.force:
+        parser.error("output already exists; choose a fresh name or use --force")
     for key in ("scare_default", "finale"):
         if key in cfg:
             print(f"Note: {key!r} is recorded in the config but not used by "
                   f"the sign generator or the player — it has no effect.",
                   file=sys.stderr)
-    out = sys.argv[2] if len(sys.argv) > 2 else "out/signs.html"
     outdir = os.path.dirname(os.path.abspath(out)) or "."
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # repo root
-    base, kit = cfg["play_base_url"], cfg["kit_id"]
+    base = cfg["play_base_url"]
     signs = [SIGN.format(title=tx(cfg["game_title"]), heading=tx(cfg.get("start_heading", "Start Here!")),
         sub=f"{tx(cfg['community'])} · {tx(cfg['window'])}<br>Scan to join the hunt — one phone per team.",
         art=art_html(cfg.get("poster_art"), root, outdir, "Wisp leading the lantern parade"),
-        qr=qr_svg(f"{base}?kit={quote(kit)}&ac={quote(cfg['access_code'])}"),
+        qr=qr_svg(poster_url(cfg)),
         scan_hint=(f"Scan with your phone camera. Camera broken? Open "
                    f"<b>{tx(base)}</b> and enter the access code below."),
         foot=f"No app to install. Stuck? Your organizer has a hint line. Access code: {tx(cfg['access_code'])}")]
@@ -111,12 +110,18 @@ def main():
             heading=tx(f"Stop {s['order']}: {s['name']}"),
             sub="You found a quest stop! Scan to unlock the puzzle.",
             art=art_html(s.get("art"), root, outdir, f"Art for {s['name']}"),
-            qr=qr_svg(f"{base}?kit={quote(kit)}&stop={s['order']}&code={quote(s['code'])}"),
+            qr=qr_svg(stop_url(cfg, s)),
             scan_hint=(f"Scan with your phone camera. Camera broken? Open "
                        f"<b>{tx(base)}</b> and enter the sign code below."),
             foot=tx(f"Sign code: {s['code']} · Place at: {s['placement']}")))
     os.makedirs(os.path.dirname(out) or ".", exist_ok=True)
-    open(out, "w", encoding="utf-8").write("<!DOCTYPE html><meta charset='utf-8'>" + CSS + "\n".join(signs))
+    unverified = (
+        '<p role="note"><strong>NOT VALIDATED AGAINST A QUEST PACK.</strong> '
+        'Match all six signs against the final pack and field-test before distribution.</p>'
+        if not args.pack else ""
+    )
+    with open(out, "w", encoding="utf-8") as handle:
+        handle.write("<!DOCTYPE html><meta charset='utf-8'>" + CSS + unverified + "\n".join(signs))
     print(f"Wrote {out} — {len(signs)} signs (1 poster + {len(cfg['stops'])} stops).")
 
 if __name__ == "__main__":
