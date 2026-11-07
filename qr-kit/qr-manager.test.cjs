@@ -42,7 +42,7 @@ test("browser sign preview always sorts numeric stops without changing input", (
   const before = cfg.stops.map(s => s.order);
   const items = links(cfg);
   assert.equal(items.length, 7);
-  assert.deepEqual(items.slice(1).map(x => x.title.match(/^Stop (\\d+)/)[1]),
+  assert.deepEqual(items.slice(1).map(x => x.title.match(/^Stop (\d+)/)[1]),
     ["1", "2", "3", "4", "5", "6"]);
   assert.deepEqual(items.slice(1).map(x => new URL(x.url).searchParams.get("stop")),
     ["1", "2", "3", "4", "5", "6"]);
