@@ -2,7 +2,7 @@
 
 **Status:** a local reporting aid, **not** event telemetry, a published dashboard, a revenue report, a verified booking, or a player integration.
 
-The [November 2026 ZQM Trending Content & Strategy Brief] recommends host-facing completion and engagement metrics, zero-install acquisition, and an organizer-funded model. This tool implements only the privacy-preserving **measurement definitions**. It does not adopt case-study lift percentages from Pinterest, Starbucks, Flipkart, Alibaba or Trivago as evidence for ZQM. Those figures describe third-party products, periods and methodologies and should be independently revalidated before public use.
+The The *November 2026 ZQM Trending Content & Strategy Brief* recommends host-facing completion and engagement metrics, zero-install acquisition, and an organizer-funded model. This tool implements only the privacy-preserving **measurement definitions**. It does not adopt case-study lift percentages from Pinterest, Starbucks, Flipkart, Alibaba or Trivago as evidence for ZQM. Those figures describe third-party products, periods and methodologies and should be independently revalidated before public use.
 
 ## Run
 
