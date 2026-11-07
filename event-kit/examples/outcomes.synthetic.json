@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "source_basis": "synthetic_demo",
+  "teams_invited": 40,
+  "teams_started": 32,
+  "teams_completed": 25,
+  "teams_sharing_offered": 20,
+  "teams_shared_reported": 11,
+  "teams_with_timing": 18,
+  "total_completion_minutes": 756,
+  "qualified_host_inquiries": 20,
+  "proposals_sent": 10,
+  "pilots_accepted": 5
+}

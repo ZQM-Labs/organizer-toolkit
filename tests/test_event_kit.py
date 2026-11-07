@@ -18,7 +18,7 @@ class EventKitTests(unittest.TestCase):
 
     def test_all_theme_samples_are_valid_planning_only(self):
         directory = ROOT / "event-kit" / "examples"
-        names = sorted(directory.glob("*.json"))
+        names = sorted(directory.glob("*.sample.json"))
         self.assertEqual(len(names), 4)
         for name in names:
             with self.subTest(name=name.name):
