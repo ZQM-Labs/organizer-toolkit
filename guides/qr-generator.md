@@ -42,6 +42,12 @@ printing. Files are processed locally, but opening a test link sends the
 encoded parameters to the selected server. The access code is hidden from
 displayed text, not removed from the private link itself.
 
+## Artwork and output integrity
+
+If using optional `poster_art` or per-stop `art`, keep source files inside the cloned repository. The generator now writes content-addressed files in the output's `art/` folder, so two different `logo.png` files used on separate stops cannot silently replace one another. Source images larger than 8 MiB, existing tampered asset files and output symlink destinations are rejected. It does not silently overwrite a prior HTML file; `--force` explicitly replaces a regular HTML file using a staged write but never overwrites a mismatched art asset.
+
+Retain the generated `art/` assets beside the private `signs.html`, and check every picture and QR symbol in an actual browser and printed copy. These safeguards do not prove art rights, print quality, or field readiness.
+
 ## What you get
 
 `signs.html` contains **7 pages**:

@@ -42,7 +42,7 @@ The sign generator always runs kit preflight before writing. Without `--pack`, i
 - `kit-config.example.json` — per-community config: names, codes, stop list,
   placement hints, finale spot. One config = one kit sold. Copy it and edit.
   Optional `art` / `poster_art` fields point at image files relative to the
-  repository root; missing art is skipped with a warning.
+  repository root; configured missing or inaccessible art **fails generation**, rather than silently removing a visual clue.
 - `generate_qr_signs.py` — Segno-based generator (stdlib + segno only)
 - `preflight.py` — strict kit / optional pack compatibility gate with credential-free diagnostics
 - `test_qr_signs.py` — URL-query checks: `python3 test_qr_signs.py kit-config.json --pack pack.json`
@@ -53,6 +53,12 @@ Full walkthrough: [`guides/qr-generator.md`](../guides/qr-generator.md) in
 this repository.
 
 **Browser security note:** The QR Manager never displays the start access-code value as page text, and copying or opening its link requires a deliberate click. It uses text-only DOM insertion and events rather than interpolated inline handlers. The original browser parser may silently accept duplicate JSON object keys, which is why the Python `preflight.py` remains mandatory before printing. The manager does not send or retain uploaded files or contacts; opening a test link **does** navigate to the supplied player server with that link's parameters.
+
+## Artwork integrity and output safety
+
+Optional `poster_art` and per-stop `art` paths are **local repo-relative inputs**, not remote URLs. The sign generator bounds each source artwork file to 8 MiB, rejects sources that escape the repository root, and saves a content-addressed file as `art/asset-<digest>.png` (or the supported source extension). Two different files named `scene.png` can no longer overwrite each other. Repeated identical artwork reuses one output asset; an existing but modified asset causes a failure instead of a silent overwrite.
+
+The destination `art/` directory cannot be a symlink. Generated sign HTML cannot be written through a symlink either. By default, output HTML is created exclusively; to intentionally replace a prior **regular** HTML file, supply `--force`, which stages a complete replacement before moving it into place. `--force` never authorizes replacing an existing artwork with different bytes. Keep the complete `signs.html` **and** accompanying `art/` folder together and private; printed signs still require QR and artwork checks on real devices.
 
 ## Consistency test between Python and browser previews
 
