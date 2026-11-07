@@ -48,6 +48,8 @@ If using optional `poster_art` or per-stop `art`, keep source files inside the c
 
 The generator first prepares all seven signs and optional images in a private staging directory. It then publishes complete assets and writes the complete private HTML file **last**. If publishing fails, newly added assets from that attempt are rolled back while earlier sign files remain unchanged. On supported POSIX filesystems, new HTML and art files are owner-only. Previously existing matching art keeps its prior permissions and must be reviewed separately.
 
+**One publisher per output folder:** The final asset/HTML commit uses a `.qr-publish.lock` directory. Concurrent generator runs targeting the same folder refuse to commit, avoiding rollback of another kit's image. A stale lock after a power loss is **not** auto-deleted: first verify no generator is running, then remove that lock directory manually. Do not delete the private sign HTML or `art/` folder to clear a lock. This is a local serialization safeguard, not a multi-host distributed lock or an event activation check.
+
 Retain the generated `art/` assets beside the private `signs.html`, and check every picture and QR symbol in an actual browser and printed copy. These safeguards do not prove art rights, print quality, or field readiness.
 
 **Consistent print order:** The six stops are always printed and previewed as **Stop 1 through Stop 6**, regardless of the order of the six objects in the JSON file. The generator does not change the source pack or stop IDs; the start poster remains first. Confirm physical placement and walking sequence independently before a real event.
