@@ -32,9 +32,15 @@ python3 test_qr_signs.py my-kit.json --pack path/to/private-pack.json
 #    Keep signs.html and all access-code-bearing signs private
 ```
 
-Prefer a visual interface? Open `qr-kit/qr-manager.html` in a browser —
-upload your kit config JSON to see all QR codes, test each URL, and run a
-pre-print checklist. No server needed; it runs entirely in the browser.
+Prefer a visual interface? Open `qr-kit/qr-manager.html` from the
+repository folder in a browser. Load the **kit config** and, optionally,
+the **matching six-stop pack** to preview link controls and inspect structure.
+It does not draw physical QR symbols, verify a live route, or certify
+entitlements. Unlike the Python preflight, the browser JSON parser cannot
+reliably reject duplicate object keys; complete the Python step above before
+printing. Files are processed locally, but opening a test link sends the
+encoded parameters to the selected server. The access code is hidden from
+displayed text, not removed from the private link itself.
 
 ## What you get
 
