@@ -70,8 +70,7 @@ def art_html(path, root, outdir, alt=""):
     if os.path.commonpath((root, src)) != root:
         raise PreflightError("art path escapes repository root")
     if not os.path.isfile(src):
-        print("  warning: configured artwork not found; skipping", file=sys.stderr)
-        return ""
+        raise PreflightError("configured artwork is missing or is not a regular file")
     with open(src, "rb") as handle:
         payload = handle.read(ART_MAX_BYTES + 1)
     if len(payload) > ART_MAX_BYTES:
