@@ -211,6 +211,19 @@ class KitPreflightTests(unittest.TestCase):
             self.assertIn("NOT VALIDATED AGAINST A QUEST PACK", unverified.read_text())
             self.assertIn("NOT been matched", unverified_result.stderr)
 
+    def test_art_asset_filename_cannot_inject_html(self):
+        import generate_qr_signs as generator
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            suspicious = 'photo" onerror="alert(1).png'
+            (root / suspicious).write_bytes(b"synthetic image stub")
+            destination = root / "output"
+            fragment = generator.art_html(suspicious, str(root), str(destination), 'alt "value"')
+            self.assertIn("src=\"art/photo&quot; onerror=&quot;alert(1).png\"", fragment)
+            self.assertNotIn('onerror="alert(1)"', fragment)
+            self.assertIn("alt=\"alt &quot;value&quot;\"", fragment)
+
     def test_mismatched_generator_refuses_to_write_signs(self):
         cfg = example()
         wrong_pack = matching_pack(cfg)
