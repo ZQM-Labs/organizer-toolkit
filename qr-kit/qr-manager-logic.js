@@ -118,7 +118,7 @@
       title: "Start poster",
       url: createLink(cfg.play_base_url, [["kit", cfg.kit_id], ["ac", cfg.access_code]]),
       visible: "Access-code join link (hidden until copied or opened)",
-    }, ...cfg.stops.map(s => ({
+    }, ...[...cfg.stops].sort((a, b) => a.order - b.order).map(s => ({
       kind: "stop",
       title: "Stop " + s.order + " — " + s.name,
       url: createLink(cfg.play_base_url, [["kit", cfg.kit_id], ["stop", s.order], ["code", s.code]]),
