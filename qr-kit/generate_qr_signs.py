@@ -126,22 +126,27 @@ def main():
     outdir = os.path.dirname(os.path.abspath(out)) or "."
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # repo root
     base = cfg["play_base_url"]
-    signs = [SIGN.format(title=tx(cfg["game_title"]), heading=tx(cfg.get("start_heading", "Start Here!")),
-        sub=f"{tx(cfg['community'])} · {tx(cfg['window'])}<br>Scan to join the hunt — one phone per team.",
-        art=art_html(cfg.get("poster_art"), root, outdir, "Wisp leading the lantern parade"),
-        qr=qr_svg(poster_url(cfg)),
-        scan_hint=(f"Scan with your phone camera. Camera broken? Open "
-                   f"<b>{tx(base)}</b> and enter the access code below."),
-        foot=f"No app to install. Stuck? Your organizer has a hint line. Access code: {tx(cfg['access_code'])}")]
-    for s in cfg["stops"]:
-        signs.append(SIGN.format(title=tx(cfg["game_title"]),
-            heading=tx(f"Stop {s['order']}: {s['name']}"),
-            sub="You found a quest stop! Scan to unlock the puzzle.",
-            art=art_html(s.get("art"), root, outdir, f"Art for {s['name']}"),
-            qr=qr_svg(stop_url(cfg, s)),
+    try:
+        signs = [SIGN.format(title=tx(cfg["game_title"]), heading=tx(cfg.get("start_heading", "Start Here!")),
+            sub=f"{tx(cfg['community'])} · {tx(cfg['window'])}<br>Scan to join the hunt — one phone per team.",
+            art=art_html(cfg.get("poster_art"), root, outdir, "Wisp leading the lantern parade"),
+            qr=qr_svg(poster_url(cfg)),
             scan_hint=(f"Scan with your phone camera. Camera broken? Open "
-                       f"<b>{tx(base)}</b> and enter the sign code below."),
-            foot=tx(f"Sign code: {s['code']} · Place at: {s['placement']}")))
+                       f"<b>{tx(base)}</b> and enter the access code below."),
+            foot=f"No app to install. Stuck? Your organizer has a hint line. Access code: {tx(cfg['access_code'])}")]
+        for s in cfg["stops"]:
+            signs.append(SIGN.format(title=tx(cfg["game_title"]),
+                heading=tx(f"Stop {s['order']}: {s['name']}"),
+                sub="You found a quest stop! Scan to unlock the puzzle.",
+                art=art_html(s.get("art"), root, outdir, f"Art for {s['name']}"),
+                qr=qr_svg(stop_url(cfg, s)),
+                scan_hint=(f"Scan with your phone camera. Camera broken? Open "
+                           f"<b>{tx(base)}</b> and enter the sign code below."),
+                foot=tx(f"Sign code: {s['code']} · Place at: {s['placement']}")))
+    except PreflightError as exc:
+        parser.error("Artwork validation failed: " + str(exc))
+    except OSError:
+        parser.error("Could not read or copy artwork; check local permissions and paths")
     os.makedirs(os.path.dirname(out) or ".", exist_ok=True)
     unverified = (
         '<p role="note"><strong>NOT VALIDATED AGAINST A QUEST PACK.</strong> '
