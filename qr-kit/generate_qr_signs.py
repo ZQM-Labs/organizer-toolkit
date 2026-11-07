@@ -183,7 +183,7 @@ def render_signs(cfg, root, output_dir, base):
         scan_hint=(f"Scan with your phone camera. Camera broken? Open "
                    f"<b>{tx(base)}</b> and enter the access code below."),
         foot=f"No app to install. Stuck? Your organizer has a hint line. Access code: {tx(cfg['access_code'])}")]
-    for s in cfg["stops"]:
+    for s in sorted(cfg["stops"], key=lambda stop: stop["order"]):
         signs.append(SIGN.format(title=tx(cfg["game_title"]),
             heading=tx(f"Stop {s['order']}: {s['name']}"),
             sub="You found a quest stop! Scan to unlock the puzzle.",
