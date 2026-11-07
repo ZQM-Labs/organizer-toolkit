@@ -94,6 +94,107 @@ def art_html(path, root, outdir, alt=""):
                 raise PreflightError("output artwork hash collision; refusing to overwrite")
     return f'<div class="art"><img src="art/{name}" alt="{tx(alt)}"></div>'
 
+
+def _checksum(path):
+    digest = hashlib.sha256()
+    with open(path, "rb") as stream:
+        for block in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def publish_private_bundle(stage, out, rendered, force=False):
+    """Publish complete QR HTML and content-addressed artwork together.
+
+    Render everything into a private, same-filesystem staging directory first.
+    Link complete assets atomically without overwriting them, then publish
+    the complete HTML as the final commit marker. On any failure, roll back
+    artwork added by this invocation; existing output is left unchanged.
+    """
+    outdir = os.path.dirname(os.path.abspath(out))
+    staged_html = os.path.join(stage, "signs.html")
+    with open(staged_html, "x", encoding="utf-8") as handle:
+        handle.write(rendered)
+    os.chmod(staged_html, 0o600)
+    art_src = os.path.join(stage, "art")
+    art_dest = os.path.join(outdir, "art")
+    added = []
+    created_dir = False
+    try:
+        if os.path.isdir(art_src):
+            if os.path.islink(art_dest):
+                raise PreflightError("output art directory cannot be a symlink")
+            if not os.path.exists(art_dest):
+                os.mkdir(art_dest, mode=0o700)
+                created_dir = True
+            if not os.path.isdir(art_dest):
+                raise PreflightError("output art path must be a directory")
+            for name in sorted(os.listdir(art_src)):
+                source = os.path.join(art_src, name)
+                target = os.path.join(art_dest, name)
+                if os.path.islink(source) or not os.path.isfile(source):
+                    raise PreflightError("staged art must be a regular file")
+                os.chmod(source, 0o600)
+                if os.path.lexists(target):
+                    if os.path.islink(target) or not os.path.isfile(target):
+                        raise PreflightError("existing output art is not a regular file")
+                    if _checksum(source) != _checksum(target):
+                        raise PreflightError("output artwork content collision")
+                    continue
+                try:
+                    # Both directories are beneath outdir, so hard-linking
+                    # complete staged bytes never exposes partial image output.
+                    os.link(source, target)
+                    added.append(target)
+                except FileExistsError:
+                    if (os.path.islink(target) or not os.path.isfile(target)
+                            or _checksum(source) != _checksum(target)):
+                        raise PreflightError("output artwork content collision")
+        if os.path.islink(out):
+            raise PreflightError("output HTML cannot be a symlink")
+        if force:
+            if os.path.lexists(out) and not os.path.isfile(out):
+                raise PreflightError("output HTML must be a regular file")
+            os.replace(staged_html, out)
+        else:
+            # Exclusive atomic publication of the already-written HTML.
+            # Unlike open(..., "x"), no truncated HTML is ever visible.
+            os.link(staged_html, out)
+    except (OSError, PreflightError):
+        for target in reversed(added):
+            # Never remove a file altered by another process after creation.
+            source = os.path.join(art_src, os.path.basename(target))
+            if (os.path.isfile(target) and not os.path.islink(target)
+                    and os.path.isfile(source) and _checksum(target) == _checksum(source)):
+                os.unlink(target)
+        if created_dir:
+            try:
+                os.rmdir(art_dest)
+            except OSError:
+                pass
+        raise
+
+def render_signs(cfg, root, output_dir, base):
+    """Produce all seven signs into an isolated private stage."""
+    signs = [SIGN.format(title=tx(cfg["game_title"]), heading=tx(cfg.get("start_heading", "Start Here!")),
+        sub=f"{tx(cfg['community'])} · {tx(cfg['window'])}<br>Scan to join the hunt — one phone per team.",
+        art=art_html(cfg.get("poster_art"), root, output_dir, "Wisp leading the lantern parade"),
+        qr=qr_svg(poster_url(cfg)),
+        scan_hint=(f"Scan with your phone camera. Camera broken? Open "
+                   f"<b>{tx(base)}</b> and enter the access code below."),
+        foot=f"No app to install. Stuck? Your organizer has a hint line. Access code: {tx(cfg['access_code'])}")]
+    for s in cfg["stops"]:
+        signs.append(SIGN.format(title=tx(cfg["game_title"]),
+            heading=tx(f"Stop {s['order']}: {s['name']}"),
+            sub="You found a quest stop! Scan to unlock the puzzle.",
+            art=art_html(s.get("art"), root, output_dir, f"Art for {s['name']}"),
+            qr=qr_svg(stop_url(cfg, s)),
+            scan_hint=(f"Scan with your phone camera. Camera broken? Open "
+                       f"<b>{tx(base)}</b> and enter the sign code below."),
+            foot=tx(f"Sign code: {s['code']} · Place at: {s['placement']}")))
+    return signs
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("config", help="Private QR sign kit configuration")
@@ -123,54 +224,30 @@ def main():
                   f"the sign generator or the player — it has no effect.",
                   file=sys.stderr)
     outdir = os.path.dirname(os.path.abspath(out)) or "."
+    if os.path.islink(outdir):
+        parser.error("output directory cannot be a symlink")
+    try:
+        os.makedirs(outdir, mode=0o700, exist_ok=True)
+    except OSError:
+        parser.error("cannot create private output directory")
     root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # repo root
     base = cfg["play_base_url"]
-    try:
-        signs = [SIGN.format(title=tx(cfg["game_title"]), heading=tx(cfg.get("start_heading", "Start Here!")),
-            sub=f"{tx(cfg['community'])} · {tx(cfg['window'])}<br>Scan to join the hunt — one phone per team.",
-            art=art_html(cfg.get("poster_art"), root, outdir, "Wisp leading the lantern parade"),
-            qr=qr_svg(poster_url(cfg)),
-            scan_hint=(f"Scan with your phone camera. Camera broken? Open "
-                       f"<b>{tx(base)}</b> and enter the access code below."),
-            foot=f"No app to install. Stuck? Your organizer has a hint line. Access code: {tx(cfg['access_code'])}")]
-        for s in cfg["stops"]:
-            signs.append(SIGN.format(title=tx(cfg["game_title"]),
-                heading=tx(f"Stop {s['order']}: {s['name']}"),
-                sub="You found a quest stop! Scan to unlock the puzzle.",
-                art=art_html(s.get("art"), root, outdir, f"Art for {s['name']}"),
-                qr=qr_svg(stop_url(cfg, s)),
-                scan_hint=(f"Scan with your phone camera. Camera broken? Open "
-                           f"<b>{tx(base)}</b> and enter the sign code below."),
-                foot=tx(f"Sign code: {s['code']} · Place at: {s['placement']}")))
-    except PreflightError as exc:
-        parser.error("Artwork validation failed: " + str(exc))
-    except OSError:
-        parser.error("Could not read or copy artwork; check local permissions and paths")
-    os.makedirs(os.path.dirname(out) or ".", exist_ok=True)
     unverified = (
         '<p role="note"><strong>NOT VALIDATED AGAINST A QUEST PACK.</strong> '
         'Match all six signs against the final pack and field-test before distribution.</p>'
         if not args.pack else ""
     )
-    rendered = "<!DOCTYPE html><meta charset='utf-8'>" + CSS + unverified + "\n".join(signs)
-    if args.force:
-        # Stage the full HTML on the same filesystem before replacing it.
-        with tempfile.NamedTemporaryFile(
-            mode="w", encoding="utf-8", dir=outdir, prefix=".qr-stage-",
-            suffix=".html", delete=False,
-        ) as staged:
-            temp_file = staged.name
-            staged.write(rendered)
-        try:
-            os.replace(temp_file, out)
-        finally:
-            if os.path.exists(temp_file):
-                os.unlink(temp_file)
-    else:
-        # Exclusive creation remains fail-closed even if another process
-        # created the output after the initial existence check.
-        with open(out, "x", encoding="utf-8") as handle:
-            handle.write(rendered)
+    try:
+        with tempfile.TemporaryDirectory(dir=outdir, prefix=".qr-stage-") as stage:
+            # Keep source art processing and HTML generation in one private
+            # staging directory, then publish as a single logical operation.
+            signs = render_signs(cfg, root, stage, base)
+            rendered = "<!DOCTYPE html><meta charset='utf-8'>" + CSS + unverified + "\n".join(signs)
+            publish_private_bundle(stage, out, rendered, force=args.force)
+    except PreflightError as exc:
+        parser.error("QR bundle publishing failed: " + str(exc))
+    except OSError:
+        parser.error("QR bundle publishing failed; check private output permissions")
     print(f"Wrote {out} — {len(signs)} signs (1 poster + {len(cfg['stops'])} stops).")
 
 if __name__ == "__main__":
