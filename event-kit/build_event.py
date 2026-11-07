@@ -118,7 +118,7 @@ def compile_event(cfg: dict) -> dict:
     title = _text(cfg["event_title"], "event_title")
     venue = _text(cfg["venue_label"], "venue_label", 140)
     theme = cfg["theme"]
-    if theme not in THEMES:
+    if not isinstance(theme, str) or theme not in THEMES:
         raise ValueError("Unsupported theme")
     zone_name = _text(cfg["timezone"], "timezone", 64)
     try:
