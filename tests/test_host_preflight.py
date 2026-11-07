@@ -343,6 +343,73 @@ class KitPreflightTests(unittest.TestCase):
             self.assertEqual(real.read_text(), "must not be replaced")
             self.assertTrue(output.is_symlink())
 
+    def test_output_directory_lock_blocks_overlapping_asset_and_html_commit(self):
+        import generate_qr_signs as generator
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            stage = root / "stage"
+            (stage / "art").mkdir(parents=True)
+            item = stage / "art" / "asset-123456789012345678901234.png"
+            item.write_bytes(b"synthetic staged art")
+            out = root / "signs.html"
+            guard = root / ".qr-publish.lock"
+            with generator.publication_lock(str(root)):
+                self.assertTrue(guard.is_dir())
+                with self.assertRaisesRegex(preflight.PreflightError, "locked"):
+                    generator.publish_private_bundle(str(stage), str(out), "seven private signs")
+                self.assertFalse(out.exists())
+                self.assertFalse((root / "art").exists())
+            self.assertFalse(guard.exists())
+            generator.publish_private_bundle(str(stage), str(out), "seven private signs")
+            self.assertEqual(out.read_text(), "seven private signs")
+            self.assertEqual((root / "art" / item.name).read_bytes(), item.read_bytes())
+            self.assertFalse(guard.exists())
+
+    def test_cli_refuses_stale_lock_without_disclosing_codes_or_changing_signs(self):
+        cfg = example()
+        cfg["access_code"] = "PRIVATE-KEEP-HIDDEN"
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            kit = root / "kit.json"
+            out = root / "signs.html"
+            guard = root / ".qr-publish.lock"
+            kit.write_text(json.dumps(cfg), encoding="utf-8")
+            args = [sys.executable, str(QR / "generate_qr_signs.py"), str(kit), str(out)]
+            initial = subprocess.run(args, capture_output=True, text=True, timeout=30)
+            self.assertEqual(initial.returncode, 0, initial.stderr)
+            original = out.read_bytes()
+            guard.mkdir()
+            blocked = subprocess.run(args + ["--force"], capture_output=True, text=True, timeout=30)
+            self.assertNotEqual(blocked.returncode, 0)
+            self.assertIn("directory is locked", blocked.stderr)
+            self.assertNotIn(cfg["access_code"], blocked.stdout + blocked.stderr)
+            self.assertEqual(out.read_bytes(), original)
+            self.assertTrue(guard.is_dir())
+            self.assertFalse(any(root.glob(".qr-stage-*")))
+            guard.rmdir()
+            retried = subprocess.run(args + ["--force"], capture_output=True, text=True, timeout=30)
+            self.assertEqual(retried.returncode, 0, retried.stderr)
+            self.assertFalse(guard.exists())
+            self.assertEqual(out.read_bytes(), original)
+
+    def test_failed_publication_releases_lock_for_next_attempt(self):
+        import generate_qr_signs as generator
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            out = root / "signs.html"
+            out.write_text("previous signs", encoding="utf-8")
+            stage = root / "stage"
+            stage.mkdir()
+            with self.assertRaises(FileExistsError):
+                generator.publish_private_bundle(str(stage), str(out), "new signs", force=False)
+            self.assertFalse((root / ".qr-publish.lock").exists())
+            self.assertEqual(out.read_text(), "previous signs")
+            generator.publish_private_bundle(str(stage), str(out), "new signs", force=True)
+            self.assertEqual(out.read_text(), "new signs")
+            self.assertFalse((root / ".qr-publish.lock").exists())
+
     def test_private_bundle_publishes_complete_html_and_assets_only(self):
         import generate_qr_signs as generator
         import os
