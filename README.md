@@ -57,6 +57,10 @@ python scripts/check_docs.py
 
 The [host-owned Community Day generator](event-kit/README.md) creates an **offline printable event sheet and JSON schedule** from a strict, timezone-aware template. It supports anonymous staggered starts, an optional cooperative finale, six consent-safe observation cards, and a deterministic optional reflection prompt. Four planning-only community, heritage, team and seasonal examples are included. It **does not** create a playable quest, schedule server-side unlocks, track players, take photos, expose live GPS, or deploy new services. Use the existing private QR-kit workflow for actual approved editions.
 
+## Privacy-safe host outcome reporting (offline)
+
+The [aggregate outcomes calculator](event-kit/OUTCOMES.md) produces locally computed, small-cohort-suppressed completion, optional-sharing, duration and prospective host-sales funnel summaries from **manually entered team counts**. It does not collect player locations, link to payment systems, or produce verified commercial results. A synthetic example and regression tests are included; no measured ZQM conversion rates are claimed.
+
 ## New pilot formats (planning only)
 
 The [civic and tourism six-stop pilot packet](guides/civic-tourism-pilot.md) provides a scoped host intake, an editorial canvas and pre-release venue, licensing and accessibility checks. It does **not** represent a ready-made city route or guaranteed white-label service.
