@@ -406,6 +406,8 @@ class KitPreflightTests(unittest.TestCase):
                 generator.publish_private_bundle(str(stage), str(out), "new signs", force=False)
             self.assertFalse((root / ".qr-publish.lock").exists())
             self.assertEqual(out.read_text(), "previous signs")
+            # A real CLI retry uses a new TemporaryDirectory stage.
+            (stage / "signs.html").unlink()
             generator.publish_private_bundle(str(stage), str(out), "new signs", force=True)
             self.assertEqual(out.read_text(), "new signs")
             self.assertFalse((root / ".qr-publish.lock").exists())
