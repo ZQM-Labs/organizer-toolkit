@@ -220,7 +220,7 @@ class KitPreflightTests(unittest.TestCase):
             (root / suspicious).write_bytes(b"synthetic image stub")
             destination = root / "output"
             fragment = generator.art_html(suspicious, str(root), str(destination), 'alt "value"')
-            self.assertRegex(fragment, r'src="art/asset-[0-9a-f]{24}\\.png"')
+            self.assertRegex(fragment, r'src="art/asset-[0-9a-f]{24}\.png"')
             self.assertNotIn('onerror="alert(1)"', fragment)
             self.assertNotIn('photo&quot;', fragment)
             self.assertIn("alt=\"alt &quot;value&quot;\"", fragment)
