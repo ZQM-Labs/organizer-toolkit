@@ -18,14 +18,18 @@ cd qr-kit
 cp kit-config.example.json my-kit.json
 # Edit my-kit.json: kit_id, access_code, community, stops, play_base_url
 
-# 4. Generate signs
-python3 generate_qr_signs.py my-kit.json signs.html
+# 4. Check six stop codes/orders and the URL; do not output access codes
+python3 preflight.py my-kit.json
 
-# 5. Test (verifies QR URLs match config)
-python3 test_qr_signs.py my-kit.json
+# 5. For a real event, cross-check the final matching six-stop JSON pack
+python3 preflight.py my-kit.json --pack path/to/private-pack.json
 
-# 6. Print signs.html (one sign per page)
-#    Use a browser's Print dialog, fit-to-page, color
+# 6. Only then generate and test private signs, using the same pack
+python3 generate_qr_signs.py my-kit.json signs.html --pack path/to/private-pack.json
+python3 test_qr_signs.py my-kit.json --pack path/to/private-pack.json
+
+# 7. Print signs.html (one sign per page) and field-test all six scans
+#    Keep signs.html and all access-code-bearing signs private
 ```
 
 Prefer a visual interface? Open `qr-kit/qr-manager.html` in a browser —
@@ -56,7 +60,7 @@ Each sign includes:
 | `game_title` | Yes | Displayed on all signs |
 | `play_base_url` | Yes | The deployed quest player URL |
 | `scare_default` | No | `cozy` (default), `spooky`, `afterdark`, `overdrive` |
-| `window` | No | Displayed on the start poster |
+| `window` | Yes | Displayed on the start poster |
 | `stops` | Yes | Array of 6 stops (see below) |
 | `finale` | No | `{location, treat}` for the finale table |
 
@@ -67,8 +71,14 @@ Each sign includes:
 | `code` | Yes | Unique code (e.g. `LANTERN-1`) |
 | `name` | Yes | Displayed on the sign |
 | `order` | Yes | 1–6, sequential |
-| `placement` | No | Where to put the sign |
+| `placement` | Yes | Where to put the sign |
 | `art` | No | Path to art asset (relative to the repository root) |
+
+## Before distributing signs
+
+The CLI preflight rejects malformed or duplicate-key JSON, insecure or pre-parameterized player URLs, bad or repeated six-stop codes, invalid orders, and unsafe art paths. With `--pack`, it additionally checks the pack's `kit` identifier and every stop's ID, name and code against the sign config. This is a **structural compatibility check**, not full content validation or proof that an event is available. Run the separate [quest-authoring validator](https://github.com/ZQM-Labs/quest-authoring), confirm the deployed player and entitlement state, and field-test the actual route.
+
+Without `--pack`, the sign generator intentionally marks the printed set **NOT VALIDATED AGAINST A QUEST PACK**. A previous output file will not be silently overwritten; `--force` is required to replace it. Never upload sign HTML, access codes, private pack answers or participant details to public GitHub. Console verification prints field names and safe status messages, **not credential-bearing URLs**.
 
 ## QR URL scheme
 

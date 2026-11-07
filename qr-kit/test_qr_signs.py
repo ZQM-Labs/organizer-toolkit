@@ -1,94 +1,57 @@
 #!/usr/bin/env python3
-"""Test harness for ZQM Labs QR sign generation.
+"""Verify exact QR URL query shapes without printing private kit credentials.
 
-Verifies that generated QR codes encode the correct URLs and that
-URL parameters match the kit config. Run after generate_qr_signs.py.
+  python qr-kit/test_qr_signs.py qr-kit/kit-config.example.json
+  python qr-kit/test_qr_signs.py private-kit.json --pack private-pack.json
 
-Usage: python3 test_qr_signs.py <kit-config.json>
-Or under pytest: test_example_kit_config() checks the bundled example.
+This checks the shared URL encoder and input relationships, not a camera
+decoding printed physical QR symbols or server-side kit entitlements.
 """
-import json, re, sys
-from urllib.parse import urlparse, parse_qs
+from __future__ import annotations
 
-def check_kit_config(cfg_path):
-    with open(cfg_path) as f:
-        cfg = json.load(f)
+import argparse
+import sys
+from pathlib import Path
 
-    errors = []
-    warnings = []
-    base = cfg["play_base_url"].rstrip("/")
-    kit = cfg["kit_id"]
+from preflight import (
+    KIT_BYTES,
+    PACK_BYTES,
+    PreflightError,
+    check_kit,
+    check_pack_alignment,
+    read_json,
+    verify_url_shapes,
+)
 
-    # Test 1: Poster QR URL
-    poster_url = f"{base}?kit={kit}&ac={cfg['access_code']}"
-    p = urlparse(poster_url)
-    qs = parse_qs(p.query)
-    if qs.get("kit", [None])[0] != kit:
-        errors.append(f"Poster QR: kit param mismatch")
-    if qs.get("ac", [None])[0] != cfg["access_code"]:
-        errors.append(f"Poster QR: access code mismatch")
-    if "code" in qs:
-        warnings.append("Poster QR should not contain 'code' param (that's for stops)")
-    print(f"✓ Poster QR: {poster_url[:60]}...")
 
-    # Test 2: Stop QR URLs
-    seen_codes = set()
-    for s in cfg["stops"]:
-        order = s["order"]
-        code = s["code"]
-        stop_url = f"{base}?kit={kit}&stop={order}&code={code}"
-        p = urlparse(stop_url)
-        qs = parse_qs(p.query)
-
-        if qs.get("kit", [None])[0] != kit:
-            errors.append(f"Stop {order}: kit param mismatch")
-        if qs.get("stop", [None])[0] != str(order):
-            errors.append(f"Stop {order}: stop param mismatch")
-        if qs.get("code", [None])[0] != code:
-            errors.append(f"Stop {order}: code param mismatch")
-        if "ac" in qs:
-            warnings.append(f"Stop {order}: should not contain 'ac' param")
-
-        # Check for duplicate codes
-        if code in seen_codes:
-            errors.append(f"Stop {order}: duplicate code '{code}'")
-        seen_codes.add(code)
-
-        # Code format check
-        if not re.match(r'^[A-Z0-9-]+$', code):
-            warnings.append(f"Stop {order}: code '{code}' has unusual characters")
-
-        print(f"✓ Stop {order} QR: {s.get('name', 'unnamed')}")
-
-    # Test 3: Config sanity
-    orders = [s["order"] for s in cfg["stops"]]
-    if sorted(orders) != list(range(1, len(orders) + 1)):
-        errors.append(f"Stop orders should be 1..{len(orders)}, got {orders}")
-    if len(cfg["stops"]) != 6:
-        warnings.append(f"Expected 6 stops, got {len(cfg['stops'])}")
-
-    print()
-    print(f"Tests: {1 + len(cfg['stops'])} QR URLs verified")
-    if warnings:
-        print(f"Warnings ({len(warnings)}):")
-        for w in warnings:
-            print(f"  ⚠ {w}")
-    if errors:
-        print(f"ERRORS ({len(errors)}):")
-        for e in errors:
-            print(f"  ✗ {e}")
+def check_kit_config(cfg_path, pack_path=None):
+    """Return 0 only when all six QR query shapes and supplied data align."""
+    try:
+        cfg = read_json(cfg_path, KIT_BYTES)
+        result = check_kit(cfg)
+        verify_url_shapes(cfg)
+        if pack_path is not None:
+            result = check_pack_alignment(cfg, read_json(pack_path, PACK_BYTES))
+    except (OSError, PreflightError) as exc:
+        print("QR check FAILED: " + str(exc), file=sys.stderr)
         return 1
-    print("All QR tests passed ✓")
+    print("QR URL preflight passed: 1 poster + 6 stops")
+    if not result["pack_alignment_checked"]:
+        print("WARNING: no quest pack supplied; codes and names NOT verified against playable pack")
+    else:
+        print("Six stop codes and names match supplied pack (full runtime validation still required)")
     return 0
 
+
 def test_example_kit_config():
-    """pytest entry point: the bundled example kit must verify clean."""
-    from pathlib import Path
+    """Bundled demo config must be structurally valid, not an activated paid kit."""
     cfg = Path(__file__).with_name("kit-config.example.json")
-    assert check_kit_config(str(cfg)) == 0
+    assert check_kit_config(cfg) == 0
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 2:
-        sys.exit("Usage: python3 test_qr_signs.py <kit-config.json>")
-    sys.exit(check_kit_config(sys.argv[1]))
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("kit")
+    parser.add_argument("--pack")
+    args = parser.parse_args()
+    raise SystemExit(check_kit_config(args.kit, args.pack))

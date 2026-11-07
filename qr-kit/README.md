@@ -8,7 +8,7 @@ any private repository to use it.
 
 ```bash
 pip install segno        # or: pip install -r requirements.txt
-python3 generate_qr_signs.py kit-config.example.json   # -> out/signs.html
+python3 generate_qr_signs.py kit-config.example.json   # -> out/signs.html (UNVERIFIED demo)
 ```
 
 Print `out/signs.html` (one sign per page): the start poster carries the
@@ -20,6 +20,23 @@ QR codes print at error-correction level H (~30% damage recovery) with a full
 4-module quiet zone for outdoor reliability, and every sign carries a
 broken-camera fallback: type the play URL, enter the printed code.
 
+## Pre-print release gate (new)
+
+A **printable QR set is not proof that its codes match the actual six-stop quest pack**. Run the offline, standard-library preflight before printing:
+
+```bash
+python3 qr-kit/preflight.py qr-kit/kit-config.example.json
+python3 qr-kit/preflight.py path/to/private-kit.json --pack path/to/private-quest-pack.json
+python3 qr-kit/generate_qr_signs.py path/to/private-kit.json out/private-signs.html --pack path/to/private-quest-pack.json
+python3 qr-kit/test_qr_signs.py path/to/private-kit.json --pack path/to/private-quest-pack.json
+```
+
+The bundled public example is **kit-only** and has `kit_id=DEMO`; it is not aligned with the separate public `SAMPLE` quest-pack JSON. Do not pair the two, advertise the example as a booked event, or publish an active access code.
+
+Preflight rejects duplicate JSON fields, malformed source, non-HTTPS or parameter-bearing player URLs, missing/duplicate/invalid stop orders and codes, unsafe art paths, and (when `--pack` is supplied) mismatched pack kit ID, stop ID, stop name or stop code. It verifies **six matching sign entries**, not full SPEC v1 semantics, authorization, venue permissions, QR scan reliability or actual live player routing. Run the official [quest-authoring validator](https://github.com/ZQM-Labs/quest-authoring) and a field/device playtest separately.
+
+The sign generator always runs kit preflight before writing. Without `--pack`, its output contains a prominent **UNVERIFIED** notice and the console warns that pack alignment was not checked. The generated HTML **intentionally contains the printed start/access code**, so keep the files private. Diagnostic output and the standalone preflight JSON report do not expose that code. The generator now refuses to overwrite an existing sign file unless you explicitly pass `--force`.
+
 ## Files
 
 - `kit-config.example.json` — per-community config: names, codes, stop list,
@@ -27,7 +44,8 @@ broken-camera fallback: type the play URL, enter the printed code.
   Optional `art` / `poster_art` fields point at image files relative to the
   repository root; missing art is skipped with a warning.
 - `generate_qr_signs.py` — Segno-based generator (stdlib + segno only)
-- `test_qr_signs.py` — QR URL verification: `python3 test_qr_signs.py kit-config.json`
+- `preflight.py` — strict kit / optional pack compatibility gate with credential-free diagnostics
+- `test_qr_signs.py` — URL-query checks: `python3 test_qr_signs.py kit-config.json --pack pack.json`
 - `qr-manager.html` — organizer QR management in the browser (upload config,
   test links, pre-print checklist). No server needed.
 - `templates/` — sign & badge SVG masters (edit in Inkscape)

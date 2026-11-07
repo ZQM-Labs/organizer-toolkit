@@ -53,6 +53,18 @@ To run the documentation checks locally (Python 3, no extra dependencies):
 python scripts/check_docs.py
 ```
 
+## Print safety: validate the six-stop QR kit against the actual quest pack
+
+Run the new [offline kit and quest-pack preflight](qr-kit/README.md) before distributing printed signs:
+
+```bash
+python3 qr-kit/preflight.py qr-kit/kit-config.example.json
+python3 qr-kit/preflight.py path/to/private-kit.json --pack path/to/private-pack.json
+python3 qr-kit/generate_qr_signs.py path/to/private-kit.json out/private-signs.html --pack path/to/private-pack.json
+```
+
+The **public example is structurally valid but not a verified or booked event**. The preflight checks six unique stop orders and codes, safe HTTPS player URL construction, and optional exact pack ID/name/code alignment. It never verifies host entitlements, venue approvals, browser compatibility or field safety. Without `--pack`, generated signs carry an explicit unverified warning. Never commit printed sign HTML, active access codes, participant locations or paid answers to a public repository.
+
 ## Offline host-run event kit generator
 
 The [host-owned Community Day generator](event-kit/README.md) creates an **offline printable event sheet and JSON schedule** from a strict, timezone-aware template. It supports anonymous staggered starts, an optional cooperative finale, six consent-safe observation cards, and a deterministic optional reflection prompt. Four planning-only community, heritage, team and seasonal examples are included. It **does not** create a playable quest, schedule server-side unlocks, track players, take photos, expose live GPS, or deploy new services. Use the existing private QR-kit workflow for actual approved editions.
@@ -69,17 +81,18 @@ The [safe team challenges guide](guides/asynchronous-team-challenges.md) provide
 
 ## The 60-second version
 
-You get a kit: 6 QR signs + a start poster, a placement map, an answer key,
-and
-a link players open on their phones (no app). You print the signs, place them,
-pick a scare level on the Dial (Cozy / Spooky / After Dark /
-Overdrive), and the game runs itself. Every kit is the same generic kit — no setup call, no customized stories or puzzles.
+For an **approved and tested** event, a host uses six QR stop signs, a start
+poster, a matching six-stop quest pack, and a supported browser-player link.
+The host validates the content and sign codes, secures venue and sign permissions,
+tests QR/manual/GPS fallback on real devices, and confirms the exact
+edition/entitlement before inviting participants. A generated HTML sheet or
+static event plan is **not** an activated or independently verified hosted game.
 
 ## Quest packs
 
 Game content lives in
 [ZQM-Labs/quest-packs](https://github.com/ZQM-Labs/quest-packs) —
-including a **free sample quest** you can run today.
+including a **free editable six-stop JSON sample** for learning and authorized local adaptation. It is distinct from the built-in browser demo and does not designate a permitted public route.
 
 ## Community-first hosting
 
