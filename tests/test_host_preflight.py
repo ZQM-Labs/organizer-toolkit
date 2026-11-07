@@ -220,9 +220,88 @@ class KitPreflightTests(unittest.TestCase):
             (root / suspicious).write_bytes(b"synthetic image stub")
             destination = root / "output"
             fragment = generator.art_html(suspicious, str(root), str(destination), 'alt "value"')
-            self.assertIn("src=\"art/photo&quot; onerror=&quot;alert(1).png\"", fragment)
+            self.assertRegex(fragment, r'src="art/asset-[0-9a-f]{24}\\.png"')
             self.assertNotIn('onerror="alert(1)"', fragment)
+            self.assertNotIn('photo&quot;', fragment)
             self.assertIn("alt=\"alt &quot;value&quot;\"", fragment)
+            self.assertEqual(len(list((destination / "art").iterdir())), 1)
+
+    def test_two_distinct_artworks_with_same_basename_are_not_overwritten(self):
+        import generate_qr_signs as generator
+        import re
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "a").mkdir()
+            (root / "b").mkdir()
+            (root / "a" / "scene.png").write_bytes(b"first synthetic image")
+            (root / "b" / "scene.png").write_bytes(b"second synthetic image")
+            output = root / "signout"
+            first = generator.art_html("a/scene.png", str(root), str(output), "First")
+            second = generator.art_html("b/scene.png", str(root), str(output), "Second")
+            pattern = r'src="art/(asset-[0-9a-f]{24}\.png)"'
+            name_a = re.search(pattern, first).group(1)
+            name_b = re.search(pattern, second).group(1)
+            self.assertNotEqual(name_a, name_b)
+            self.assertEqual((output / "art" / name_a).read_bytes(), b"first synthetic image")
+            self.assertEqual((output / "art" / name_b).read_bytes(), b"second synthetic image")
+            # Re-using an identical source is idempotent, not another overwrite.
+            self.assertEqual(first, generator.art_html("a/scene.png", str(root), str(output), "First"))
+            self.assertEqual(len(list((output / "art").iterdir())), 2)
+
+    def test_artwork_collision_symlink_and_oversize_fail_closed(self):
+        import generate_qr_signs as generator
+        import re
+
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "artwork.png").write_bytes(b"synthetic content")
+            outdir = root / "out"
+            html = generator.art_html("artwork.png", str(root), str(outdir), "Artwork")
+            filename = re.search(r'src="art/([^"]+)"', html).group(1)
+            (outdir / "art" / filename).write_bytes(b"tampered existing content")
+            with self.assertRaisesRegex(preflight.PreflightError, "collision"):
+                generator.art_html("artwork.png", str(root), str(outdir), "Artwork")
+
+            (root / "too-large.png").write_bytes(b"x" * (generator.ART_MAX_BYTES + 1))
+            with self.assertRaisesRegex(preflight.PreflightError, "8 MiB"):
+                generator.art_html("too-large.png", str(root), str(outdir), "Too large")
+
+            linked = root / "linked"
+            linked.mkdir()
+            (linked / "art").symlink_to(outdir / "art", target_is_directory=True)
+            with self.assertRaisesRegex(preflight.PreflightError, "symlink"):
+                generator.art_html("artwork.png", str(root), str(linked), "Blocked")
+
+    def test_generator_force_replaces_html_but_refuses_symlink_output(self):
+        cfg = example()
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            config = root / "kit.json"
+            config.write_text(json.dumps(cfg), encoding="utf-8")
+            output = root / "signs.html"
+            command = [sys.executable, str(QR / "generate_qr_signs.py"), str(config), str(output)]
+            self.assertEqual(
+                subprocess.run(command, capture_output=True, text=True, timeout=30).returncode,
+                0,
+            )
+            output.write_text("previous output")
+            denied = subprocess.run(command, capture_output=True, text=True, timeout=30)
+            self.assertNotEqual(denied.returncode, 0)
+            self.assertEqual(output.read_text(), "previous output")
+            allowed = subprocess.run(command + ["--force"], capture_output=True, text=True, timeout=30)
+            self.assertEqual(allowed.returncode, 0, allowed.stderr)
+            self.assertIn("class=\"sign\"", output.read_text())
+            self.assertFalse(any(root.glob(".qr-stage-*")))
+
+            real = root / "private.txt"
+            real.write_text("must not be replaced")
+            output.unlink()
+            output.symlink_to(real)
+            rejected = subprocess.run(command + ["--force"], capture_output=True, text=True, timeout=30)
+            self.assertNotEqual(rejected.returncode, 0)
+            self.assertEqual(real.read_text(), "must not be replaced")
+            self.assertTrue(output.is_symlink())
 
     def test_mismatched_generator_refuses_to_write_signs(self):
         cfg = example()
