@@ -9,6 +9,7 @@ encodes the kit's access code (as ?ac=) for team registration; stop signs
 use ?code= for the sign code — the player treats them as different params.
 """
 import argparse, hashlib, html, os, sys, tempfile
+from contextlib import contextmanager
 from preflight import KIT_BYTES, PACK_BYTES, PreflightError, read_json, check_kit, check_pack_alignment, poster_url, stop_url, verify_url_shapes
 
 try:
@@ -103,7 +104,35 @@ def _checksum(path):
     return digest.hexdigest()
 
 
+@contextmanager
+def publication_lock(outdir):
+    """Serialize sign/art publication in one output directory.
+
+    mkdir is atomic across cooperating processes. A lock remaining after
+    termination fails closed and must only be cleared after an operator
+    confirms no publisher is running. This does not lock arbitrary editors.
+    """
+    lockdir = os.path.join(outdir, ".qr-publish.lock")
+    try:
+        os.mkdir(lockdir, mode=0o700)
+    except FileExistsError as exc:
+        raise PreflightError(
+            "output directory is locked; verify no QR publisher is active "
+            "before removing a stale .qr-publish.lock directory"
+        ) from exc
+    try:
+        yield
+    finally:
+        os.rmdir(lockdir)
+
+
 def publish_private_bundle(stage, out, rendered, force=False):
+    """Coordinate asset rollback and final HTML commit under one lock."""
+    with publication_lock(os.path.dirname(os.path.abspath(out))):
+        return _publish_private_bundle_locked(stage, out, rendered, force=force)
+
+
+def _publish_private_bundle_locked(stage, out, rendered, force=False):
     """Publish complete QR HTML and content-addressed artwork together.
 
     Render everything into a private, same-filesystem staging directory first.
