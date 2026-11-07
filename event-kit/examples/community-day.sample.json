@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "event_id": "community-day-demo",
+  "event_title": "Neighborhood Story Day — Planning Example",
+  "theme": "community",
+  "timezone": "America/New_York",
+  "start_local": "2027-05-15T10:00",
+  "duration_minutes": 150,
+  "team_slots": 6,
+  "stagger_minutes": 10,
+  "finale_minutes": 25,
+  "venue_label": "Venue to be approved by host",
+  "surprise_enabled": true
+}

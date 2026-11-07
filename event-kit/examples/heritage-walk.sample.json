@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "event_id": "heritage-walk-demo",
+  "event_title": "Heritage Story Walk — Planning Example",
+  "theme": "heritage",
+  "timezone": "America/New_York",
+  "start_local": "2027-06-12T09:30",
+  "duration_minutes": 150,
+  "team_slots": 5,
+  "stagger_minutes": 10,
+  "finale_minutes": 30,
+  "venue_label": "Museum or public site, permission pending",
+  "surprise_enabled": false
+}

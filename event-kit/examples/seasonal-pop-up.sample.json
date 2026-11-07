@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "event_id": "seasonal-pop-up-demo",
+  "event_title": "Seasonal Lantern Walk — Planning Example",
+  "theme": "seasonal",
+  "timezone": "America/New_York",
+  "start_local": "2027-10-16T16:00",
+  "duration_minutes": 140,
+  "team_slots": 5,
+  "stagger_minutes": 10,
+  "finale_minutes": 25,
+  "venue_label": "Host-approved accessible path, pending",
+  "surprise_enabled": false
+}
