@@ -67,7 +67,7 @@ def art_html(path, root, outdir, alt=""):
     art_dir = os.path.join(outdir, "art")
     os.makedirs(art_dir, exist_ok=True)
     shutil.copy2(src, os.path.join(art_dir, os.path.basename(path)))
-    return f'<div class="art"><img src="art/{os.path.basename(path)}" alt="{tx(alt)}"></div>' 
+    return f'<div class="art"><img src="art/{tx(os.path.basename(path))}" alt="{tx(alt)}"></div>' 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
