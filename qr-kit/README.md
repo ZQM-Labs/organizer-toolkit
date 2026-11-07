@@ -20,6 +20,8 @@ QR codes print at error-correction level H (~30% damage recovery) with a full
 4-module quiet zone for outdoor reliability, and every sign carries a
 broken-camera fallback: type the play URL, enter the printed code.
 
+**Consistent print order:** The six stops are always printed and previewed as **Stop 1 through Stop 6**, regardless of the order of the six objects in the JSON file. The generator does not change the source pack or stop IDs; the start poster remains first. Confirm physical placement and walking sequence independently before a real event.
+
 ## Pre-print release gate (new)
 
 A **printable QR set is not proof that its codes match the actual six-stop quest pack**. Run the offline, standard-library preflight before printing:

@@ -50,6 +50,8 @@ The generator first prepares all seven signs and optional images in a private st
 
 Retain the generated `art/` assets beside the private `signs.html`, and check every picture and QR symbol in an actual browser and printed copy. These safeguards do not prove art rights, print quality, or field readiness.
 
+**Consistent print order:** The six stops are always printed and previewed as **Stop 1 through Stop 6**, regardless of the order of the six objects in the JSON file. The generator does not change the source pack or stop IDs; the start poster remains first. Confirm physical placement and walking sequence independently before a real event.
+
 ## What you get
 
 `signs.html` contains **7 pages**:
