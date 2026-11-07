@@ -46,12 +46,13 @@ The sign generator always runs kit preflight before writing. Without `--pack`, i
 - `generate_qr_signs.py` — Segno-based generator (stdlib + segno only)
 - `preflight.py` — strict kit / optional pack compatibility gate with credential-free diagnostics
 - `test_qr_signs.py` — URL-query checks: `python3 test_qr_signs.py kit-config.json --pack pack.json`
-- `qr-manager.html` — organizer QR management in the browser (upload config,
-  test links, pre-print checklist). No server needed.
+- `qr-manager.html` + `qr-manager-logic.js` — **local-only browser preview**: load a private kit, optionally load the matching six-stop pack, inspect safe link controls, then run the separate Python source preflight. Browser previews are **not** QR decode, link reachability, entitlement checks or full SPEC validation.
 - `templates/` — sign & badge SVG masters (edit in Inkscape)
 
 Full walkthrough: [`guides/qr-generator.md`](../guides/qr-generator.md) in
 this repository.
+
+**Browser security note:** The QR Manager never displays the start access-code value as page text, and copying or opening its link requires a deliberate click. It uses text-only DOM insertion and events rather than interpolated inline handlers. The original browser parser may silently accept duplicate JSON object keys, which is why the Python `preflight.py` remains mandatory before printing. The manager does not send or retain uploaded files or contacts; opening a test link **does** navigate to the supplied player server with that link's parameters.
 
 ## Provenance & license
 
