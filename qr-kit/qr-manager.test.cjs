@@ -36,6 +36,20 @@ test("local browser preview requires exactly six unique, valid sign entries", ()
   assert.doesNotMatch(JSON.stringify(result), /access_code|LANTERN-/);
 });
 
+test("browser sign preview always sorts numeric stops without changing input", () => {
+  const cfg = kit();
+  cfg.stops.reverse();
+  const before = cfg.stops.map(s => s.order);
+  const items = links(cfg);
+  assert.equal(items.length, 7);
+  assert.deepEqual(items.slice(1).map(x => x.title.match(/^Stop (\\d+)/)[1]),
+    ["1", "2", "3", "4", "5", "6"]);
+  assert.deepEqual(items.slice(1).map(x => new URL(x.url).searchParams.get("stop")),
+    ["1", "2", "3", "4", "5", "6"]);
+  assert.deepEqual(cfg.stops.map(s => s.order), before, "Input order must not mutate");
+  assert.equal(validatePack(cfg, pack(cfg)).pack_alignment_checked, true);
+});
+
 test("rejects invalid URL, wrong stop count, duplicate order, invalid code and cross-pack mismatch", () => {
   for (const bad of [
     "javascript:alert(1)", "http://zqmlabs.com/play/",
