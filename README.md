@@ -53,6 +53,12 @@ To run the documentation checks locally (Python 3, no extra dependencies):
 python scripts/check_docs.py
 ```
 
+## New pilot formats (planning only)
+
+The [civic and tourism six-stop pilot packet](guides/civic-tourism-pilot.md) provides a scoped host intake, an editorial canvas and pre-release venue, licensing and accessibility checks. It does **not** represent a ready-made city route or guaranteed white-label service.
+
+The [safe team challenges guide](guides/asynchronous-team-challenges.md) provides cooperative and staggered-start play options using existing route concepts, without asserting deployed real-time multiplayer or live GPS tracking.
+
 ## The 60-second version
 
 You get a kit: 6 QR signs + a start poster, a placement map, an answer key,
