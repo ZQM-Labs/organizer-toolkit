@@ -273,6 +273,23 @@ class KitPreflightTests(unittest.TestCase):
             with self.assertRaisesRegex(preflight.PreflightError, "symlink"):
                 generator.art_html("artwork.png", str(root), str(linked), "Blocked")
 
+    def test_missing_configured_art_cannot_silently_disappear_from_signs(self):
+        cfg = example()
+        cfg["poster_art"] = "missing-artwork.png"
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            kit = root / "kit.json"
+            output = root / "signs.html"
+            kit.write_text(json.dumps(cfg), encoding="utf-8")
+            result = subprocess.run(
+                [sys.executable, str(QR / "generate_qr_signs.py"), str(kit), str(output)],
+                capture_output=True, text=True, timeout=30,
+            )
+            self.assertNotEqual(result.returncode, 0)
+            self.assertFalse(output.exists())
+            self.assertIn("configured artwork is missing", result.stderr)
+            self.assertNotIn(cfg["access_code"], result.stdout + result.stderr)
+
     def test_generator_force_replaces_html_but_refuses_symlink_output(self):
         cfg = example()
         with tempfile.TemporaryDirectory() as tmp:
