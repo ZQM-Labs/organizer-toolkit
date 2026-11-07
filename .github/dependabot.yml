@@ -4,3 +4,8 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
+    ignore:
+      # v3 requires an organizational license not configured here.
+      # Keep the existing pinned v1 scanning workflow active.
+      - dependency-name: "gitleaks/gitleaks-action"
+        update-types: ["version-update:semver-major"]
