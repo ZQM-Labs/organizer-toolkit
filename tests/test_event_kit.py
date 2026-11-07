@@ -29,7 +29,8 @@ class EventKitTests(unittest.TestCase):
                 self.assertEqual(plan["team_slots"], len(plan["starts_local"]))
                 self.assertIsNone(plan.get("join_link"))
                 self.assertNotIn("access_code", json.dumps(plan))
-                self.assertNotIn("lat", json.dumps(plan).lower())
+                self.assertNotIn("\"lat\":", json.dumps(plan))
+                self.assertNotIn("\"lng\":", json.dumps(plan))
                 self.assertEqual(plan["player_integration"].startswith("none"), True)
 
     def test_utc_schedule_and_stagger_are_deterministic(self):
@@ -104,7 +105,7 @@ class EventKitTests(unittest.TestCase):
         a = event.compile_event(c)
         page = event.render_html(a)
         self.assertNotIn("<img", page)
-        self.assertNotIn("onerror=alert", page)
+        self.assertNotIn("<img src=x onerror=alert(1)>", page)
         self.assertIn("&lt;img", page)
         self.assertIn("&quot;onload", page)
         self.assertIn("name=\"robots\"", page)
